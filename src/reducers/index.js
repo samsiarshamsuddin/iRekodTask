@@ -5,15 +5,21 @@ import {LOG_OUT} from '../actions/types'
 import authReducer from './authReducer'
 import layoutInitReducer from './layoutInitReducer'
 import searchReducer from './searchReducer'
-// import stakehReducer from './stakehReducer'
-
+import listWorkFlowReducer from './listWorkFlowReducer'
+import workFlowDetailsReducer from './workflowDetailReducer'
+import createNewReducer from './createNewActReducer'
+import breadCrumb from './breadcrumbReducer'
 // import activitiesReducer from './activitiesReducer'
 // import taskReducer from './taskReducer'
 
 const appReducer = combineReducers({
     session:authReducer,
     layout:layoutInitReducer,
-    searchConf:searchReducer
+    searchConf:searchReducer,
+    listWrkFlw: listWorkFlowReducer,
+    workflowDetail: workFlowDetailsReducer,
+    crtNewReducer: createNewReducer,
+    breadCrumb: breadCrumb
     // stakeh:stakehReducer,
     // activities:activitiesReducer,
     // tasks:taskReducer,
