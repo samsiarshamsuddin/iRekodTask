@@ -7,11 +7,23 @@ import {setNavToggle,setPageClass, setSideNavClass} from '../actions/layoutInitA
 
 import {Footer, SideNav, TopNav} from '../components/layout'
 
+import ListWorkflow from './workflow/ListWorkflow'
+import DashPage from './dashboard/DashPage'
+import NewActivity from './workflow/NewActivity'
+import WorkflowDetails from './workflow/WorkflowDetails'
+
 class Home extends Component {
 
-
+    components={
+        'dashboard':DashPage,
+        'listOfWorkflow':ListWorkflow,
+        'createNewAct': NewActivity,
+        'view': WorkflowDetails,
+      }
+    
     componentDidMount() {
         window.addEventListener("resize", this.updateDimensions)
+        
     }
     componentWillUnmount() {
         window.removeEventListener("resize", this.updateDimensions)
@@ -23,27 +35,31 @@ class Home extends Component {
 
         this.props.setNavToggle(false, pageClass, navClass)
     }
-  render() {
-      const {pageClass}=this.props.layout
-    return (
-        <Fragment>
-            <SideNav/>
-            <div className={pageClass}>
-                <TopNav/>
-            {/* <Switch>
-                <Route path ="/helper/:type/:navObj/:itmObj" component={MainHelper} />
-                <Route path ="/details/:type/:tab/:sub/:navObj/:itmObj" component={Wizard} />
-                <Route path ="/log" component={Log} />
-                <Route path ="/upload" component={UploaderMain} />
-                <Route path ="/search/:page" component={RecExplorerMain} />
-                <Route path ="/" component={DashPage} />
-            </Switch> */}
 
-            <Footer/>
-        </div>
-    </Fragment>
-    )
-  }
+  render() {
+    const {pageClass,activePage}=this.props.layout
+    const Activepage=this.components[activePage]
+    // console.log(Activepage)
+  return (
+      <Fragment>
+          <SideNav/>
+          <div className={pageClass}>
+              <TopNav/>
+              <Activepage/>
+          {/* <Switch>
+              <Route path ="/helper/:type/:navObj/:itmObj" component={MainHelper} />
+              <Route path ="/details/:type/:tab/:sub/:navObj/:itmObj" component={Wizard} />
+              <Route path ="/log" component={Log} />
+              <Route path ="/upload" component={UploaderMain} />
+              <Route path ="/search/:page" component={RecExplorerMain} />
+              <Route path ="/" component={DashPage} />
+          </Switch> */}
+
+          <Footer/>
+      </div>
+  </Fragment>
+  )
+}
 }
 Home.propTypes={
     layout:PropTypes.object.isRequired,
