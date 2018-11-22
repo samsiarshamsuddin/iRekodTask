@@ -1,10 +1,11 @@
-import{PAGE_CLASS,TOGGLE_SIDENAV,SIDENAV_CLASS,ACTIVE_PAGE} from '../actions/types'
+import{PAGE_CLASS,TOGGLE_SIDENAV,SIDENAV_CLASS,ACTIVE_PAGE, PAGE_TITLE} from '../actions/types'
 
 const initialState={
     pageClass:'page',
     activePage:'dashboard',
     toggleSideNav:false,
-    navBarClass:'side-navbar'
+    navBarClass:'side-navbar',
+    pageTitle:'page'
 }
 
 export default function(state = initialState, action){
@@ -29,6 +30,11 @@ export default function(state = initialState, action){
             ...state,
             activePage:action.payload
         }
+        case PAGE_TITLE:
+        return { 
+            ...state,
+            pageTitle:action.payload,
+        } 
         default:
         return state
     }
