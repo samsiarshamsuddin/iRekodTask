@@ -6,7 +6,7 @@ import ListSubject from './ListSubject'
 import Breadcrumb from '../layout/Breadcrumb'
 import {setActivePage,setPageTitle} from '../../actions/layoutInitAction'
 import {setCardView, setSelWorkFlow, setShowFab, setSelDetails, setStakehList} from '../../actions/authListWorkFlow'
-import {setItemListSubject, setEmailStore, setListActivityDetails,setDelBtn} from '../../actions/workflowDetailAction'
+import {setItemListSubject, setEmailStore, setListActivityDetails,setDelBtn, setTaskResult} from '../../actions/workflowDetailAction'
 import {setEmailStoreNew} from '../../actions/createNewActAction'
 import Tooltip from 'rc-tooltip'
 import update from 'immutability-helper' 
@@ -36,6 +36,7 @@ class ListWorkflow extends Component {
             this.setState({
                 workList:listWkflw
             })
+            // console.log(listWkflw)
         }          
     }
 
@@ -59,8 +60,16 @@ class ListWorkflow extends Component {
         bio_access_id: bId      
         }
 
+        const taskResulStatusObj={
+            action: "LIST_TASK_RESULT",
+            bio_access_id: bId      
+            }
+
+      
+
         this.props.setListActivityDetails(activityDet) 
         this.props.setEmailStore(emailObj)
+        this.props.setTaskResult(taskResulStatusObj)
         // this.props.setActivePage(e.target.getAttribute('data-pagename'))
         
     }
@@ -265,7 +274,8 @@ ListWorkflow.propTypes={
     setItemListSubject:PropTypes.func.isRequired,
     setEmailStore:PropTypes.func.isRequired,
     setEmailStoreNew:PropTypes.func.isRequired,
-    setDelBtn:PropTypes.func.isRequired
+    setDelBtn:PropTypes.func.isRequired,
+    setTaskResult: PropTypes.func.isRequired,
   }
   const mapStateToProps= state =>({
     session:state.session,
@@ -281,5 +291,5 @@ export default connect(mapStateToProps,
         setSelDetails, 
         setStakehList,
         setItemListSubject,
-        setEmailStore, setEmailStoreNew, setDelBtn})(ListWorkflow)
+        setEmailStore, setEmailStoreNew, setDelBtn, setTaskResult})(ListWorkflow)
 
