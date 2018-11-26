@@ -3,6 +3,9 @@ import React, { Component,Fragment } from 'react'
 import Select from 'react-select'
 
 import 'rc-checkbox/assets/index.css';
+import { Button } from 'reactstrap';
+
+import {setListAddTask, setListTaskResultTitle, setListTaskResultStatus} from '../../actions/workflowDetailAction'
 
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
@@ -43,10 +46,13 @@ class ActivityWizard extends Component {
             prevTask: [],
             nextTask:[],
             addTaskTitle:[],
-            hideStatus: false,
-            hideTitle: false,
             taskResultStatus: [],
-            taskResultTitle: []
+            taskResultTitle: [],
+            addTaskOption:[],
+            number: 1,
+            resultTask: [],
+            taskResStat:[]
+          
         }        
     }  
 
@@ -164,11 +170,38 @@ handleNextTaskChange=(value)=>{
       })
 }
 
-handleAdditionalTask=(value)=>{
+handleTaskResultTitle=(value)=>{
+    const tskRsltTitle = value
     this.setState({
-        addTaskTitle:value
+        resultTask:value
       })
+
+      this.props.setListTaskResultTitle(tskRsltTitle)
 }
+
+handleAdditionalTask=(value)=>{
+    const nom = this.state.number
+    const addTask = value
+    this.setState({
+        addTaskTitle:value,
+        addTaskOption:value.label,
+        number:nom+1
+      })
+
+      this.props.setListAddTask(addTask)
+}
+
+handleTaskResultStatus=(value)=>{
+    const tskRsltStatus = value
+    this.setState({
+        taskResStat:value
+      })
+
+      this.props.setListTaskResultStatus(tskRsltStatus)
+}
+
+
+
 
 
 componentDidMount() {
@@ -243,16 +276,20 @@ componentDidMount() {
     }
 
   }
+
     
   render() {
 
   
     const {stakehList} = this.props.listWrkFlw
-    const {itemListSubject} = this.props.workflowDetail
-    const { stakehValAssignee, stakehValAssignor, stakehValSupervisor, stakehValManager, prevTask, addTaskTitle, nextTask} = this.state;
+    const {itemListSubject, addTask, taskResulStatusObj, tskRsltTitle, tskRsltStatus} = this.props.workflowDetail
+    const { stakehValAssignee, stakehValAssignor, stakehValSupervisor, stakehValManager, prevTask, addTaskTitle, nextTask, number,taskResStat} = this.state;
     const optionStakehList = stakehList.map((itm => ({ value: itm.stakeholder_id, label:decodeURIComponent(itm.full_name)})))
-    const optionListItemBySubject = itemListSubject.map((itm => ({ value: decodeURIComponent(itm.title), label:decodeURIComponent(itm.title)})))
-
+    const optionListItemBySubject = itemListSubject.map((itm => ({ number: number, label:decodeURIComponent(itm.title), value:decodeURIComponent(itm.title)})))
+    const optionResultTask= itemListSubject.map((itm => ({ label:decodeURIComponent(itm.title), value:decodeURIComponent(itm.title)})))
+    const optionTaskResultStatus = taskResulStatusObj.map((itm => ({ label:decodeURIComponent(itm.lovi_value), value:decodeURIComponent(itm.lov_item_id)})))
+    
+    
     const {
       task_id: task_id,
       title,
@@ -420,10 +457,6 @@ componentDidMount() {
                         </div>
 
                         <div className="row form-group">
-                            <div className="col form-group">
-                                <label>Additional Task: Number</label>
-                                <input name="additional_tasks" type="text" className="form-control" placeholder="Smith" onChange={this.handleChange} value={decodeURIComponent(additional_tasks)} />
-                            </div>
 
                             <div className="col form-group">
                                 <label>Additional Task: Title</label>
@@ -433,9 +466,27 @@ componentDidMount() {
                                     onChange={this.handleAdditionalTask}
                                     value={addTaskTitle} 
                                     isMulti
-                                    placeholder="Title"/>                                          
-                            
+                                    placeholder="Title"
+                                    /> 
+                                    
                             </div>
+                        </div>
+
+                        <div className="row form-group">
+                        <div className="col-12">
+
+                        {addTask.map((itm,idx)=>
+                            <div className="list-group">
+                                <a className="list-group-item list-group-item-action flex-column align-items-start">
+                                    <div className="d-flex w-100 justify-content-between">
+                                        <h5 key={idx} className="mb-1">{itm.value}</h5>
+                                            {/* <h5 className="mb-1 text-muted">{idx}</h5> */}
+                                    </div> 
+                                </a>
+
+                            </div>
+                        )}
+                        </div>
                         </div>
 
                         <div className="row form-group">
@@ -444,15 +495,46 @@ componentDidMount() {
                                 </div>
                         </div>
                                 <div className={is_decision===null||is_decision=== false?"d-none":"autoUpdate row"}>
-                                    <div className="col-sm-6 form-group">
-                                        <label>Task Result: Status</label>
-                                        <input type="text" name="taskResultStatus" className="form-control" onChange={this.handleChange} />
-                                    </div>
 
-                                    <div className="col-sm-6 form-group">
-                                        <label>Task Result: Title</label>
-                                        <input name="taskResultTitle" type="text" onChange={this.handleChange} className="form-control" />
-                                    </div>
+                                    <table className="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Task Result: Title</th>
+                                                <th scope="col">Task Result: Status</th>
+                                            </tr>
+                                        </thead>
+                                        
+                                        <tbody>
+                                            <tr>
+                                                <th scope="row">1</th>
+                                                    <td>
+                                                        <Select 
+                                                        options={optionResultTask}
+                                                        id="taskTitle"
+                                                        onChange={this.handleTaskResultTitle}
+                                                        // isMulti
+                                                        placeholder="Title"
+                                                        />
+                                                    </td>
+
+                                                    <td>
+                                                        <Select 
+                                                        options={optionTaskResultStatus}
+                                                        id="taskStatus"
+                                                        onChange={this.handleTaskResultStatus}
+                                                        value={taskResStat} 
+                                                        // isMulti
+                                                        placeholder="Title"
+                                                        />
+                                                    </td>
+
+                                                    <td>
+                                                    <Button>Add</Button>
+                                                    </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
 
                         {/* ACL  */}
@@ -525,7 +607,10 @@ ActivityWizard.propTypes={
     session: PropTypes.object.isRequired,
     layout: PropTypes.object.isRequired,  
     workflowDetail:PropTypes.object.isRequired,  
-    listWrkFlw:PropTypes.object.isRequired, 
+    listWrkFlw:PropTypes.object.isRequired,
+    setListAddTask:PropTypes.object.isRequired,
+    setListTaskResultTitle:PropTypes.object.isRequired,
+    setListTaskResultStatus:PropTypes.object.isRequired
 }
 
 const mapStateToProps= state =>({
@@ -535,4 +620,4 @@ const mapStateToProps= state =>({
         listWrkFlw:state.listWrkFlw
 })
     
-export default connect(mapStateToProps)(ActivityWizard)
+export default connect(mapStateToProps, {setListAddTask, setListTaskResultTitle, setListTaskResultStatus})(ActivityWizard)
