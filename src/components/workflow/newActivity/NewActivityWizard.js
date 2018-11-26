@@ -4,7 +4,7 @@ import Select from 'react-select'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 
-import {setItemListSubject} from '../../../actions/createNewActAction'
+import {setItemListSubject, setListAddTask} from '../../../actions/createNewActAction'
 class NewActivityWizard extends Component {
 
   constructor(){
@@ -19,7 +19,32 @@ class NewActivityWizard extends Component {
         view:[],
         update:[],
         remove:[],
-        modifyAcc:[]
+        modifyAcc:[],
+        addTaskTitle:[],
+        // task_id: null,
+        // title: null,
+        // subject: null,
+        // instruction: null
+        // estimated_duration: 0,
+        // is_important: false,
+        // is_auto_start: false,
+        // default_assignor_id: null
+        // default_assignor_name: null
+        // default_assignee_id: null
+        // default_assignee_name: null
+        // default_supervisor_id: null
+        // default_supervisor_name: null
+        // default_manager_id: null
+        // default_manager_name: null
+        // parent_id: null
+        // prev_task_id: null
+        // prev_task_title: null
+        // additional_tasks: [],
+        // next_task_id: null
+        // next_task_title: null
+        // is_decision: false,
+        // task_results: [],
+        // acl_id: null,
     }        
   }  
 
@@ -94,14 +119,22 @@ class NewActivityWizard extends Component {
         })
     }
 
+    handleAdditionalTask=(value)=>{
+     
+      this.setState({
+          addTaskTitle:value
+        })
+  
+        this.props.setListAddTask(value)
+    }
+
   render() {
-    const {stakehList, listWorflowbySub} = this.props.crtNewReducer
+    const {stakehList, listWorflowbySub, addTask} = this.props.crtNewReducer
     const optionStakehList = stakehList.map((itm => ({ value: itm.stakeholder_id, label:decodeURIComponent(itm.full_name)})))
     const {subject, stakehValAssigneeNew, stakehValAssignorNew, stakehValManagerNew, stakehValSupervisorNew, hasDecision, 
-      view,update,remove,modifyAcc} = this.state
+      view,update,remove,modifyAcc, addTaskTitle} = this.state
     const {listofSubjectObj} = this.props.listWrkFlw
     const optionListItemBySubject = listofSubjectObj.map((itm => ({ value: decodeURIComponent(itm.subject), label:decodeURIComponent(itm.subject)})))
-    // const listOptionPrev = listofSubjectObj.filter(itm => itm.subject=== subject)
     const listbySubject = listWorflowbySub.map((itm => ({ value: decodeURIComponent(itm.title), label:decodeURIComponent(itm.title)})))
 
     return (
@@ -243,22 +276,33 @@ class NewActivityWizard extends Component {
                             </div>
                         </div>
 
-                        <div className="row form-group">
-                            <div className="col form-group">
-                                <label>Additional Task: Number</label>
-                                <input name="additional_tasks" type="text" className="form-control" placeholder="Smith" onChange={this.handleChange}/>
-                            </div>
-
-                            <div className="col form-group">
-                                <label>Additional Task: Title</label>
-                                <Select 
-                                    options={optionListItemBySubject}
+                             <div className="row form-group">
+                                <div className="col form-group">
+                                 <label>Additional Task: Title</label> 
+                                    <Select 
+                                    options={listbySubject}
                                     onChange={this.handleAdditionalTask}
-                                    // value={addTaskTitle} 
+                                    
                                     isMulti
-                                    placeholder="Title"/>                                          
-                            
-                            </div>
+                                    placeholder="Title"
+                                  /> 
+                                </div>
+                              </div>
+
+                              <div className="row form-group">
+                                <div className="col-12">
+
+                                 {addTask.map((itm,idx)=>
+                                 <div key={idx} className="list-group">
+                                  <a className="list-group-item list-group-item-action flex-column align-items-start">
+                                    <div className="d-flex w-100 justify-content-between">
+                                        <h5 key={idx} className="mb-1">{itm.value}</h5>
+                                            {/* <h5 className="mb-1 text-muted">{idx}</h5> */}
+                                    </div> 
+                                   </a>
+                                 </div>
+                               )}
+                        </div>
                         </div>
 
                         <div className="row form-group">
@@ -352,6 +396,7 @@ NewActivityWizard.propTypes={
   crtNewReducer:PropTypes.object.isRequired, 
   listWrkFlw:PropTypes.object.isRequired, 
   setItemListSubject:PropTypes.object.isRequired, 
+  setListAddTask:PropTypes.object.isRequired, 
 }
 
 const mapStateToProps= state =>({
@@ -362,4 +407,4 @@ const mapStateToProps= state =>({
       listWrkFlw:state.listWrkFlw
 })
   
-export default connect(mapStateToProps, {setItemListSubject})(NewActivityWizard)
+export default connect(mapStateToProps, {setItemListSubject, setListAddTask})(NewActivityWizard)
