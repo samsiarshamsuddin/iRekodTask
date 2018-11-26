@@ -15,27 +15,31 @@ class Breadcrumb extends Component {
     //     console.log("breadList")
     
     //   }
-      componentDidUpdate(prevProps){
-        if(prevProps.breadcrumb.newBread!==this.props.breadCrumb.newBread){
-          console.log('update bread')
-            const{breadList,newBread}=this.props.breadCrumb
-            const newBreadList =
-            breadList < 1 ?
-            update(breadList, {$push:[newBread]})
-            :update(breadList, {$splice:[[1, 3, newBread]]})
-            console.log('newBreadList')
-            this.props.setBread(newBreadList)
-        }
-      }
+      // componentDidUpdate(prevProps){
+      //   if(prevProps.breadcrumb.newBread!==this.props.breadCrumb.newBread){
+      //     console.log('update bread')
+      //       const{breadList,newBread}=this.props.breadCrumb
+      //       const newBreadList =
+      //       // breadList < 1 ?
+      //       update(breadList, {$push:[newBread]})
+      //       // :update(breadList, {$splice:[[1, 3, newBread]]})
+      //       console.log('newBreadList')
+      //       // this.props.setBread(newBreadList)
+      //   }
+      // }
 
   render() {
     const{pageTitle}=this.props.layout
-    return (
+    // const{activityDet}=this.props.workflowDetail
+        return (
       <div>
+       
+
         <ul className="breadcrumb">
-        <a className="breadcrumb-item" href='/'>Homes</a>
-        <li className="breadcrumb-item active">{pageTitle}</li>
-      </ul>
+            <a className="breadcrumb-item" href='/' onClick={this.setActivePage} data-pagename="dashboard">Home</a>
+                <a className="breadcrumb-item" href='/' data-pagename="index" onClick={this.setActivePage}>{pageTitle}</a>
+                {/* {activityDet.map((item,idx)=><li key={idx} className={breadCrumb_View?"breadcrumb-item active":"d-none"}>{item.full_name}</li>)} */}
+        </ul>
       </div>
     )
   }
