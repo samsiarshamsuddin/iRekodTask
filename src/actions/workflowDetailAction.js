@@ -1,4 +1,5 @@
-import { LIST_ACTIVITY, WIZARD_PAGE, SET_ACTIVITY_STORE, SET_EMAIL_STORE,LIST_SUBJECT_ITEM ,SET_CONTAINER_LINE, DELETE_WORKFLOW} from './types'
+import { LIST_ACTIVITY, WIZARD_PAGE, SET_ACTIVITY_STORE, SET_EMAIL_STORE,LIST_SUBJECT_ITEM ,SET_CONTAINER_LINE, DELETE_WORKFLOW, 
+    LIST_ADD_TASK, LIST_CUSTOM_FIELD_STKH, LIST_TASK_RESULT_STATUS, LIST_SELECTED_TASK_RESULT_TITLE, LIST_SELECTED_TASK_RESULT_STATUS} from './types'
 
 import {biorisUrl} from '../config/appConf'
 
@@ -26,6 +27,27 @@ export const setWizardPage=(param)=>{
 export const setContinerLine=(param)=>{
     return {
         type:SET_CONTAINER_LINE,
+        payload:param
+    }
+}
+
+export const setListAddTask=(param)=>{
+    return {
+        type:LIST_ADD_TASK,
+        payload:param
+    }
+}
+
+export const setListTaskResultTitle=(param)=>{
+    return {
+        type:LIST_SELECTED_TASK_RESULT_TITLE,
+        payload:param
+    }
+}
+
+export const setListTaskResultStatus=(param)=>{
+    return {
+        type:LIST_SELECTED_TASK_RESULT_STATUS,
         payload:param
     }
 }
@@ -80,6 +102,32 @@ export const setDelBtn = (param) => dispatch =>{
             console.log(res)
             dispatch({
                 type:DELETE_WORKFLOW,
+                payload:res.results
+            })
+        })
+}
+
+export const setCustomField = (customFieldObj) => dispatch =>{
+    // console.log(param)
+    const url=`${biorisUrl}/customField?param=${JSON.stringify(customFieldObj)}`
+        fetch(url,{method:'GET'})
+        .then(res=>res.json())
+        .then(res=>{
+            dispatch({
+                type:LIST_CUSTOM_FIELD_STKH,
+                payload:res.results
+            })
+        })
+}
+
+export const setTaskResult = (taskResulStatusObj) => dispatch =>{
+    // console.log(param)
+    const url=`${biorisUrl}/listOfValue?param=${JSON.stringify(taskResulStatusObj)}`
+        fetch(url,{method:'GET'})
+        .then(res=>res.json())
+        .then(res=>{
+            dispatch({
+                type:LIST_TASK_RESULT_STATUS,
                 payload:res.results
             })
         })
