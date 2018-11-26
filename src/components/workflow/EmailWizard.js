@@ -106,8 +106,10 @@ if (activityDet[0].email_template_id!==""){
    } = this.state
    
 
-  const {emailObj} = this.props.workflowDetail
+  const {emailObj,customFieldObj} = this.props.workflowDetail
   const optionEmailTemp = emailObj.map((itm => ({ value: itm.email_template_id, label:decodeURIComponent(itm.name)})))
+  const optionCstmFldStkhObj = customFieldObj.map((itm => ({ value: decodeURIComponent(itm.custom_field_name), label:decodeURIComponent(itm.custom_field_name)})))
+  console.log(optionCstmFldStkhObj)
   const { recepients, incStakeh, emailTempName} = this.state
 
   const {stakehList} = this.props.listWrkFlw
@@ -178,7 +180,7 @@ if (activityDet[0].email_template_id!==""){
                         <label>Stakeholders</label>
                           <Select
                               onChange={this.handleIncStakehsChange}
-                              options={stakehOptions}
+                              options={optionCstmFldStkhObj}
                               value={incStakeh}
                               isMulti
                               isClearable
