@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import {setActivePage,setPageTitle} from '../../actions/layoutInitAction'
 import {setListWorkFlow,setListofSubject} from '../../actions/authListWorkFlow'
 import {setStakehListNew} from '../../actions/createNewActAction'
+import {setCustomField} from '../../actions/workflowDetailAction'
 
 class SideNav extends React.Component {
   constructor(){
@@ -58,13 +59,18 @@ class SideNav extends React.Component {
       bio_access_id: bId       
     }
 
+    const customFieldObj={
+      action: "ITEM_LIST_BY_OBJECT",
+      bio_access_id: bId,
+      object_id:"STKH"    
+  }
  
 
     this.props.setStakehListNew(stakehList)
     this.props.setListWorkFlow(listWrkFlwObj)
     this.props.setListofSubject(listofSubjectObj)
     this.props.setPageTitle(e.target.name)
-    
+    this.props.setCustomField(customFieldObj)
     
   }
 
@@ -232,9 +238,10 @@ SideNav.propTypes={
     setListofSubject: PropTypes.func.isRequired,
     setPageTitle:PropTypes.func.isRequired,
     setStakehListNew:PropTypes.func.isRequired,
+    setCustomField:PropTypes.func.isRequired
   }
   const mapStateToProps= state =>({
     session:state.session,
     layout:state.layout
   })
-  export default connect(mapStateToProps,{setActivePage,setListWorkFlow,setListofSubject,setPageTitle,setStakehListNew})(SideNav)
+  export default connect(mapStateToProps,{setActivePage,setListWorkFlow,setListofSubject,setPageTitle,setStakehListNew,setCustomField})(SideNav)
