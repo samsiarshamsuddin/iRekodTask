@@ -1,4 +1,4 @@
-import {WIZARD_PAGE_ADD, SET_CONTAINER_LINE_ADD, LIST_STAKEH_ADD, LIST_WORKFLOWBY_SUBJECT, LIST_EMAIL_ADD} from './types'
+import {WIZARD_PAGE_ADD, SET_CONTAINER_LINE_ADD, LIST_STAKEH_ADD, LIST_WORKFLOWBY_SUBJECT, LIST_EMAIL_ADD, LIST_ADD_TASK_NEW} from './types'
 
 import {biorisUrl} from '../config/appConf'
 
@@ -13,6 +13,13 @@ export const setWizardPageNew=(param)=>{
 export const setContinerLineNew=(param)=>{
     return {
         type:SET_CONTAINER_LINE_ADD,
+        payload:param
+    }
+}
+
+export const setListAddTask=(param)=>{
+    return {
+        type:LIST_ADD_TASK_NEW,
         payload:param
     }
 }
