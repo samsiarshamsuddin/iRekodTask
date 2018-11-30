@@ -1,4 +1,5 @@
-import {WIZARD_PAGE_ADD, SET_CONTAINER_LINE_ADD, LIST_STAKEH_ADD, LIST_WORKFLOWBY_SUBJECT, LIST_EMAIL_ADD, LIST_ADD_TASK_NEW} from './types'
+import {WIZARD_PAGE_ADD, SET_CONTAINER_LINE_ADD, LIST_STAKEH_ADD, LIST_WORKFLOWBY_SUBJECT, LIST_EMAIL_ADD, 
+    LIST_ADD_TASK_NEW, ADD_NEW_ACTIVITY, RES_DETAILS} from './types'
 
 import {biorisUrl} from '../config/appConf'
 
@@ -39,10 +40,9 @@ export const setStakehListNew=(stakehList)=>dispatch=>{
 
 export const setItemListSubject=(listWorflowbySub)=>dispatch=>{
     const url=`${biorisUrl}/tasks?param=${JSON.stringify(listWorflowbySub)}`
-    fetch(url)
+    fetch(url, {method:'GET'})
     .then(res=>res.json())
     .then(res=>{
-        console.log(res)
         dispatch({
             type: LIST_WORKFLOWBY_SUBJECT,
             payload: res.results
@@ -63,6 +63,27 @@ export const setEmailStoreNew = (param) => dispatch =>{
                 type:LIST_EMAIL_ADD,
                 payload:res.results
             })
+        })
+}
+
+export const addNewActivity = (param) => dispatch =>{
+    // console.log(param)
+    const url=`${biorisUrl}/tasks?param=${JSON.stringify(param)}`
+        fetch(url,{method:'POST'})
+        .then(res=>res.json())
+        .then(res=>{
+// console.log(res)
+            dispatch({
+                type:ADD_NEW_ACTIVITY,
+                payload:param
+            })
+
+            dispatch({
+                type:RES_DETAILS,
+                payload:res.task_id
+            })
+            
+            
         })
 }
 
