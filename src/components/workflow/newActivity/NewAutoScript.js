@@ -48,6 +48,10 @@ this.setState({
                     </div>
                   </div>
           </div> 
+          <div className="">
+                    <button type="submit" className="btn btn-primary">Save</button>
+                    <button type="button" className="btn btn-secondary">Close</button>
+                </div>
      </form>
       </Fragment>
     )
