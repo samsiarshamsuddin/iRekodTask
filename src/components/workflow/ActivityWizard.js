@@ -268,7 +268,7 @@ componentDidMount() {
 
     {next_task_title === "" ?
     this.setState({
-        neexTask:[{label : "", value: ""}],
+        nextTask:[{label : "", value: ""}],
     }) : 
     this.setState({
         nextTask:[{label : listOptionNext[0].title, value: listOptionNext[0].title}],
