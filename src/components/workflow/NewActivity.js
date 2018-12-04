@@ -28,6 +28,7 @@ class NewActivity extends Component {
   render() {
 
     const {wizard_Page, container_Line} = this.props.crtNewReducer
+    const {pageTitle} = this.props.layout
 
     this.components={
       newActivityWizard:NewActivityWizard,
@@ -37,10 +38,21 @@ class NewActivity extends Component {
     const NewDetailsWizard=this.components[wizard_Page]
     return (
       <div>
+
+        <div className="breadcrumb-holder">
+            <div className="container-fluid">
+                <div className="breadcrumb">
+                    <div className="breadcrumb-item"><a href='/' onClick={this.setActivePage} data-pagename="dashboard">Home</a></div>
+                    <div className="breadcrumb-item"><a className="breadcrumb-item" href='/' data-pagename="index">{pageTitle}</a></div>
+                   
+                </div>
+            </div>
+        </div> 
+
         <section className="forms">
            <div className="container-fluid">
                <header>
-                  <h1 className="h3 display">kkkk</h1>
+                  <h1 className="h3 display"></h1>
                </header>
                <div className=" row">
                    <div className="col-lg-12">
