@@ -8,6 +8,7 @@ import {setActivePage,setPageTitle} from '../../actions/layoutInitAction'
 import {setCardView, setSelWorkFlow, setShowFab, setSelDetails, setStakehList} from '../../actions/authListWorkFlow'
 import {setItemListSubject, setEmailStore, setListActivityDetails,setDelBtn, setTaskResult} from '../../actions/workflowDetailAction'
 import {setEmailStoreNew} from '../../actions/createNewActAction'
+import {setActivityDetailsUpdate} from '../../actions/updateActAction'
 import Tooltip from 'rc-tooltip'
 import update from 'immutability-helper' 
 
@@ -27,6 +28,7 @@ class ListWorkflow extends Component {
     
     }
 
+
     componentDidUpdate(prevProps){
         if(prevProps.listWrkFlw.listSub!==this.props.listWrkFlw.listSub){
             const {listSub}=this.props.listWrkFlw  
@@ -36,9 +38,9 @@ class ListWorkflow extends Component {
             this.setState({
                 workList:listWkflw
             })
-            // console.log(listWkflw)
         }          
     }
+
 
     setActivePage=(FabRec)=>{
         // e.preventDefault()
@@ -65,17 +67,15 @@ class ListWorkflow extends Component {
             bio_access_id: bId      
             }
 
-      
-
-        this.props.setListActivityDetails(activityDet) 
+        this.props.setListActivityDetails(activityDet)
+        this.props.setActivityDetailsUpdate(activityDet)  
         this.props.setEmailStore(emailObj)
-        this.props.setTaskResult(taskResulStatusObj)
-        // this.props.setActivePage(e.target.getAttribute('data-pagename'))
-        
+        this.props.setTaskResult(taskResulStatusObj)        
     }
 
     createNewActivity=(e)=>{
         const page = e.target.getAttribute('data-pagename')
+        const pageTitle = e.target.getAttribute('data-name')
         const {user:{bio_access_id:bId}}=this.props.session
 
         this.props.setActivePage(page)
@@ -85,7 +85,7 @@ class ListWorkflow extends Component {
         bio_access_id: bId      
             }
         this.props.setEmailStoreNew(emailObj)
-    
+        this.props.setPageTitle(pageTitle)
     }
 
     changeToViewCard=(e)=>{
@@ -158,9 +158,10 @@ class ListWorkflow extends Component {
         
         }
         this.props.setDelBtn(wrkflowObj)
-
         alert("Successful Deleted")
- 
+        
+
+       
     } 
 
 
@@ -214,7 +215,7 @@ class ListWorkflow extends Component {
                                 arrowContent={<div className="rc-tooltip-arrow-inner"></div>}
                             >
                             <button className="btn btn-sm btn-primary" onClick={this.createNewActivity} name="createNewAct" data-pagename="createNewAct">
-                            <i className="fa fa-tasks" name="createNewAct" data-pagename="createNewAct"></i>
+                            <i className="fa fa-tasks" name="createNewAct" data-name="Create New" data-pagename="createNewAct"></i>
                             </button>
                             </Tooltip>
 
@@ -276,6 +277,9 @@ ListWorkflow.propTypes={
     setEmailStoreNew:PropTypes.func.isRequired,
     setDelBtn:PropTypes.func.isRequired,
     setTaskResult: PropTypes.func.isRequired,
+    setPageTitle:PropTypes.func.isRequired,
+    setActivityDetailsUpdate: PropTypes.func.isRequired,
+
   }
   const mapStateToProps= state =>({
     session:state.session,
@@ -291,5 +295,7 @@ export default connect(mapStateToProps,
         setSelDetails, 
         setStakehList,
         setItemListSubject,
-        setEmailStore, setEmailStoreNew, setDelBtn, setTaskResult})(ListWorkflow)
+        setEmailStore, setEmailStoreNew, setDelBtn, setTaskResult,
+        setPageTitle,
+        setActivityDetailsUpdate})(ListWorkflow)
 
