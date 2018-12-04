@@ -57,3 +57,7 @@ export const LIST_EMAIL_ADD = 'LIST_EMAIL_ADD'
 export const LIST_ADD_TASK_NEW = 'LIST_ADD_TASK_NEW'
 export const ADD_NEW_ACTIVITY = 'ADD_NEW_ACTIVITY'
 export const RES_DETAILS = 'RES_DETAILS'
+
+//update activity action and reducer link
+export const UPDATE_ACTIVITY = 'UPDATE_ACTIVITY'
+export const LIST_UPDATE_ACTIVITY = 'LIST_UPDATE_ACTIVITY'
