@@ -8,6 +8,7 @@ import searchReducer from './searchReducer'
 import listWorkFlowReducer from './listWorkFlowReducer'
 import workFlowDetailsReducer from './workflowDetailReducer'
 import createNewReducer from './createNewActReducer'
+import updateActReducer from './updateActReducer'
 // import breadCrumb from './breadcrumbReducer'
 // import activitiesReducer from './activitiesReducer'
 // import taskReducer from './taskReducer'
@@ -19,6 +20,7 @@ const appReducer = combineReducers({
     listWrkFlw: listWorkFlowReducer,
     workflowDetail: workFlowDetailsReducer,
     crtNewReducer: createNewReducer,
+    updActReducer: updateActReducer
     // breadCrumb: breadCrumb
     // stakeh:stakehReducer,
     // activities:activitiesReducer,
