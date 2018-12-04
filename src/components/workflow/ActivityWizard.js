@@ -6,6 +6,7 @@ import 'rc-checkbox/assets/index.css';
 import { Button } from 'reactstrap';
 
 import {setListAddTask, setListTaskResultTitle, setListTaskResultStatus} from '../../actions/workflowDetailAction'
+import {updateActivity} from '../../actions/updateActAction'
 
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
@@ -51,13 +52,18 @@ class ActivityWizard extends Component {
             addTaskOption:[],
             number: 1,
             resultTask: [],
-            taskResStat:[]
+            taskResStat:[],
+            accViewVal:[],
+            accUpdVal:[],
+            accRmvVal:[],
+            accModVal:[], 
           
         }        
     }  
 
     componentWillMount(){
-
+    const {activityDet}=this.props.workflowDetail  
+    console.log(activityDet)
       const {
         task_id,
         subject,
@@ -117,6 +123,77 @@ class ActivityWizard extends Component {
         })    
 
     }
+
+    // componentDidUpdate(prevProps){
+    // if(prevProps.workflowDetail.activityDet!==this.props.workflowDetail.activityDet){
+    //         //  console.log(prevProps.workflowDetail.activityDet)   
+    //     const {
+    //         task_id,
+    //         subject,
+    //         title,
+    //         instruction,
+    //         estimated_duration ,
+    //          is_important,
+    //          is_auto_start ,
+    //          default_assignor_id ,
+    //          default_assignee_id,
+    //          default_assignor_name,
+    //          default_assignee_name,
+    //          default_supervisor_id ,
+    //          default_supervisor_name ,
+    //          default_manager_id ,
+    //          default_manager_name ,
+    //          parent_id,
+    //          prev_task_id ,
+    //          prev_task_title,
+    //          additional_tasks ,
+    //          next_task_id ,
+    //          next_task_title ,
+    //          is_decision ,
+    //          task_results ,
+    //          acl_id ,
+    //          acl_entries,
+    //          stakeholder_fields ,
+             
+    //       } = this.props.item
+    //       console.log(acl_entries)
+    //  this.setState({
+    //       task_id: task_id,
+    //       title: title,
+    //       subject: subject,
+    //       instruction: instruction,
+    //       estimated_duration: estimated_duration,
+    //       is_important: is_important,
+    //       is_auto_start: is_auto_start,
+    //       default_assignor_id: default_assignor_id,
+    //       default_assignee_id: default_assignee_id,
+    //       default_assignor_name:default_assignor_name,
+    //       default_assignee_name: default_assignee_name,
+    //       default_supervisor_id: default_supervisor_id,
+    //       default_supervisor_name: default_supervisor_name,
+    //       default_manager_id: default_manager_id,
+    //       default_manager_name: default_manager_name,
+    //       parent_id: parent_id,
+    //       prev_task_id: prev_task_id,
+    //       prev_task_title: prev_task_title,
+    //       additional_tasks: additional_tasks,
+    //       next_task_id: next_task_id,
+    //       next_task_title: next_task_title,
+    //       is_decision: is_decision,
+    //       task_results: task_results,
+    //       acl_id: acl_id,
+    //       acl_entries:acl_entries,
+    //       stakeholder_fields: stakeholder_fields,
+    //     })    
+    //     }
+  
+       
+       
+    //     // if(prevProps.updActReducer.activityDet!==this.props.updActReducer.activityDet){
+    //     //     console.log(prevProps.updActReducer)
+    //     // }
+    // }
+
      
     handleChange=(event)=>{
         const target = event.target
@@ -126,11 +203,8 @@ class ActivityWizard extends Component {
       this.setState({
           [input]:inputVal,
         }) 
-
-    // const is_important = this.state.is_important
-    //   this.setState({
-    //     is_important:!is_important,
-    //     }) 
+        console.log(inputVal)
+        console.log(input)
     } 
 
     handleAssignorChange=(value)=>{
@@ -159,8 +233,9 @@ handleSupervisorChange=(value)=>{
 }
 
 handlePrevTaskChange=(value)=>{
+    console.log(value)
     this.setState({
-        prevTask:value
+        prev_task_title:value
       })
 }
 
@@ -200,13 +275,30 @@ handleTaskResultStatus=(value)=>{
       this.props.setListTaskResultStatus(tskRsltStatus)
 }
 
+handleViewChange=(value)=>{
+        this.setState({accViewVal:value})
+        console.log(value)
+    }
 
+    handleUpdChange=(value)=>{
+        this.setState({accUpdVal:value})
+        // console.log(value)
+    }
 
+    handleRemoveChange=(value)=>{
+        this.setState({accRmvVal:value})
+        // console.log(value)
+    }
+
+    handleModifyChange=(value)=>{
+        this.setState({accModVal:value})
+        // console.log(value)
+    }     
 
 
 componentDidMount() {
     const {stakehList} = this.props.listWrkFlw
-    const {itemListSubject} = this.props.workflowDetail
+    const {itemListSubject, activityDet} = this.props.workflowDetail
     const {default_assignee_name, default_assignor_name, default_manager_name, prev_task_title, default_supervisor_name, next_task_title, additional_tasks} = this.props.item
     const stakehOptionsAssignee = stakehList.filter(itm => itm.full_name === default_assignee_name)
     const stakehOptionsAssignor = stakehList.filter(itm => itm.full_name === default_assignor_name)
@@ -214,13 +306,69 @@ componentDidMount() {
     const stakehOptionSupervisor = stakehList.filter(itm => itm.full_name === default_supervisor_name)
     const listOptionPrev = itemListSubject.filter(itm => itm.title=== prev_task_title)
     const listOptionNext = itemListSubject.filter(itm => itm.title=== next_task_title)
-   
+    // console.log(listOptionNext.task_id)
+    const {acl_entries} = this.props.item
+
+                if(acl_entries!==undefined){
+                function acl_multi(array) {
+    
+                    const res = {
+                        view: [],
+                        update: [],
+                        remove: [],
+                        modify_access: []
+                    }
+                
+                    const keys = Object.keys(array[0])
+                
+                    for (let i = 0; i < array.length; i++) {
+                        keys.forEach(function (key) {
+                            if (key !== 'stakeholder_name' && key !== 'stakeholder_id' && key !== 'stakeholder_type_id') {
+                                if (array[i][key]) {
+                                    res[key].push({
+                                        stakeholder_name: array[i].stakeholder_name,
+                                        stakeholder_id: array[i].stakeholder_id,
+                                        stakeholder_type_id: array[i].stakeholder_type_id                                       
+                                    })
+                                }
+                            }
+                        })
+                    }
+                    return res
+                }   
+    
+                let { view, update, remove, modify_access: aclMod } = acl_multi(acl_entries) // returns object. Push to array if so desired 
+                //  console.log(acl_entries)
+                
+                const accView = view.map(itm=>({value: itm.stakeholder_id, label:decodeURIComponent(itm.stakeholder_name), type: itm.stakeholder_type_id}))
+                //  console.log(view)
+    
+                const accUpd = update.map(itm=>({value: itm.stakeholder_id, label:decodeURIComponent(itm.stakeholder_name),   type: itm.stakeholder_type_id}))
+                //  console.log(accView)
+    
+                const accRmv = remove.map(itm=>({value: itm.stakeholder_id, label:decodeURIComponent(itm.stakeholder_name), type: itm.stakeholder_type_id}))
+                //  console.log(accView)
+    
+                const accMod = aclMod.map(itm=>({value: itm.stakeholder_id, label:decodeURIComponent(itm.stakeholder_name),   type: itm.stakeholder_type_id}))
+                //  console.log(accView)
+                
+                this.setState({ 
+                    accViewVal:accView,
+                    accUpdVal:accUpd,
+                    accRmvVal:accRmv,
+                    accModVal:accMod,
+                })       
+            }    
+    
+    
+    
+    
     {default_assignor_name === "" ?
     this.setState({
         stakehValAssignor:[{label : "", value: ""}]
     }) : 
     this.setState({
-        stakehValAssignor:[{label : stakehOptionsAssignor[0].full_name, value: stakehOptionsAssignor[0].full_name}]
+        stakehValAssignor:[{label : stakehOptionsAssignor[0].full_name, value: stakehOptionsAssignor[0].stakeholder_id}]
             })
     }
 
@@ -231,7 +379,7 @@ componentDidMount() {
         stakehValAssignee:[{label : "", value: ""}],
     }) : 
     this.setState({
-        stakehValAssignee:[{label : stakehOptionsAssignee[0].full_name, value: stakehOptionsAssignee[0].full_name}]
+        stakehValAssignee:[{label : stakehOptionsAssignee[0].full_name, value: stakehOptionsAssignee[0].stakeholder_id}]
             })
     }
 
@@ -242,7 +390,7 @@ componentDidMount() {
         stakehValManager:[{label : "", value: ""}],
     }) : 
     this.setState({
-        stakehValManager:[{label : stakehOptionManager[0].full_name, value: stakehOptionManager[0].full_name}]
+        stakehValManager:[{label : stakehOptionManager[0].full_name, value: stakehOptionManager[0].stakeholder_id}]
             })
     }
 
@@ -252,30 +400,239 @@ componentDidMount() {
         stakehValSupervisor:[{label : "", value: ""}],
     }) : 
     this.setState({
-        stakehValSupervisor:[{label : stakehOptionSupervisor[0].full_name, value: stakehOptionSupervisor[0].full_name}]
+        stakehValSupervisor:[{label : stakehOptionSupervisor[0].full_name, value: stakehOptionSupervisor[0].stakeholder_id}]
             })
     }
 
     // set state for prev task name selection
     {prev_task_title === ""  ?
     this.setState({
-        prevTask:[{label : "", value: ""}],
+        prev_task_title:[{label : "", value: ""}],
     }) : 
     this.setState({
-        prevTask:[{label : listOptionPrev[0].title, value: listOptionPrev[0].title}],
+        prev_task_title:[{label : listOptionPrev[0].title, value: listOptionPrev[0].task_id}],
             })
     }
 
     {next_task_title === "" ?
     this.setState({
-        nextTask:[{label : "", value: ""}],
+        next_task_title:[{label : "", value: ""}],
     }) : 
     this.setState({
-        nextTask:[{label : listOptionNext[0].title, value: listOptionNext[0].title}],
+        next_task_title:[{label : listOptionNext[0].title, value: listOptionNext[0].task_id}],
             })
     }
 
   }
+
+  formSubmit=(e)=>{
+       
+    const {user:{bio_access_id:bId}} = this.props.session
+    const {wrkflSel} = this.props.listWrkFlw
+    const {activityDet} = this.props.workflowDetail
+    console.log(activityDet[0].acl_id)
+    const { 
+    stakehValAssignee,
+    stakehValAssignor,
+    stakehValManager,
+    stakehValSupervisor,
+    title,
+    subject,
+    instruction,
+    estimated_duration,
+    is_important,
+    is_auto_start,
+    prevTask,
+    nextTask,
+    is_decision
+    } = this.state
+    e.preventDefault()
+ 
+    const {
+     email_template_id ,
+     recipients ,
+     include_assignee ,
+     include_home ,
+     include_owner ,
+     include_stakeholders,
+     is_enable_auto_scripting ,
+     auto_scripting,
+     acl_id,
+     next_task_title,
+     next_task_id,
+     prev_task_title,
+     prev_task_id,
+     default_assignee_name,
+     
+    } = this.props.item
+
+    const updateObj={
+      task_id:wrkflSel,
+      title: title,
+      subject: subject,
+      instruction: instruction,
+      estimated_duration: estimated_duration,
+      is_important: is_important,
+      is_auto_start: is_auto_start,
+      default_assignor_id: stakehValAssignor.value,
+      default_assignor_name: stakehValAssignor.label,
+      default_assignee_id:stakehValAssignee.value,
+      default_assignee_name: stakehValAssignee.label,
+      default_supervisor_id: stakehValSupervisor.value,
+      default_supervisor_name: stakehValSupervisor.label,
+      default_manager_id: stakehValManager.value,
+      default_manager_name: stakehValManager.label,
+      parent_id: null,
+      prev_task_id: prev_task_id,
+      prev_task_title: prev_task_title,
+      additional_tasks: null,
+      next_task_id: next_task_id,
+      next_task_title: next_task_title,
+      is_decision: is_decision,
+      task_results: null,
+      acl_id: acl_id,
+      acl_entries: this.Aclselected(),
+
+      email_template_id: email_template_id,
+      recipients: null,
+      include_assignee: include_assignee,
+      include_home: include_home,
+      include_owner: include_owner,
+      include_stakeholders: include_stakeholders,
+      stakeholder_fields: null,
+      is_enable_auto_scripting: is_enable_auto_scripting,
+      auto_scripting: auto_scripting,
+
+      bio_access_id: bId,
+      action: "SAVE_TASK" 
+
+    }        
+    this.props.updateActivity(updateObj)
+    console.log(updateObj)
+    alert("Successful Update")
+
+}
+
+ Aclselected=()=>{
+        const {accViewVal, accUpdVal, accRmvVal, accModVal} = this.state    
+        // console.log(accViewVal)
+        
+       
+        // console.log(accViewVal)
+        const viewSource = accViewVal.map(item =>({
+            stakeholder_id: item.value,
+            stakeholder_name: item.label,
+            stakeholder_type_id: item.value,
+            attach: false,
+            modify_access: false,
+            remove: false,
+            remove_child: false,
+            update: false,
+            update_child: false,
+            view: true,
+            view_child: false,
+            index: -1,
+            depth: 0,
+            expanded: false,
+            expandable: true,
+            checked: null,
+            leaf: false,
+            cls: null,
+            iconCls: null,
+            icon: null,
+            root: false,
+            isLast: false,
+            isFirst: false,
+            allowDrop: true,
+            allowDrag: true,
+            loaded: false,
+            loading: false,
+            href: null,
+            hrefTarget: null,
+            qtip: null,
+            qtitle: null,
+            qshowDelay: 0,
+            children: null
+        }))       
+
+        // console.log(viewSource)   
+        const update = this.acl_builder(accUpdVal, viewSource, 'update')    
+        // console.log(update)    
+        const remove = this.acl_builder(accRmvVal, update, 'remove')
+        // console.log(remove)   
+        const modAcl = this.acl_builder(accModVal, remove, 'modify_access')
+        // console.log(modAcl)                        
+
+        if (modAcl === undefined)
+        {
+            // modAcl = null  
+            this.setState({
+                acl_id:null
+            })           
+        }
+
+        // console.log(modAcl) 
+
+        return modAcl
+    }
+
+    ///////////////////////////////////recursive function//////////////////////////////////////////
+    acl_builder=(selData,aclEntries,type)=>{  
+        // console.log(selData)         
+        // console.log(aclEntries)          
+        selData.map(item=>
+           { const TargetItem = aclEntries.findIndex(rec=>rec.stakeholder_id===item.value) 
+            // console.log(TargetItem)
+            if ( TargetItem!==-1) {
+                aclEntries[TargetItem][type] = true
+            } 
+            else {
+                var aclObj =
+                    {                             
+                        stakeholder_id: null,
+                        stakeholder_name: null,
+                        stakeholder_type_id: null,
+                        attach: false,
+                        modify_access: false,
+                        remove: false,
+                        remove_child: false,
+                        update: false,
+                        update_child: false,
+                        view: false,
+                        view_child: false,
+                        index: -1,
+                        depth: 0,
+                        expanded: false,
+                        expandable: true,
+                        checked: null,
+                        leaf: false,
+                        cls: null,
+                        iconCls: null,
+                        icon: null,
+                        root: false,
+                        isLast: false,
+                        isFirst: false,
+                        allowDrop: true,
+                        allowDrag: true,
+                        loaded: false,
+                        loading: false,
+                        href: null,
+                        hrefTarget: null,
+                        qtip: null,
+                        qtitle: null,
+                        qshowDelay: 0,
+                        children: null
+                    }
+            aclObj.stakeholder_id= item.value  
+            aclObj.stakeholder_name=  item.label  
+            aclObj.stakeholder_type_id= item.type  
+            aclObj[type]=true
+            aclEntries.push(aclObj)
+            }              
+        })          
+        return aclEntries   
+    }
+  
 
     
   render() {
@@ -283,9 +640,9 @@ componentDidMount() {
   
     const {stakehList} = this.props.listWrkFlw
     const {itemListSubject, addTask, taskResulStatusObj, tskRsltTitle, tskRsltStatus} = this.props.workflowDetail
-    const { stakehValAssignee, stakehValAssignor, stakehValSupervisor, stakehValManager, prevTask, addTaskTitle, nextTask, number,taskResStat} = this.state;
+    const { stakehValAssignee, stakehValAssignor, stakehValSupervisor, stakehValManager, prevTask, addTaskTitle, nextTask, prev_task_title, number,taskResStat, accViewVal, accUpdVal, accRmvVal, accModVal, next_task_title} = this.state
     const optionStakehList = stakehList.map((itm => ({ value: itm.stakeholder_id, label:decodeURIComponent(itm.full_name)})))
-    const optionListItemBySubject = itemListSubject.map((itm => ({ number: number, label:decodeURIComponent(itm.title), value:decodeURIComponent(itm.title)})))
+    const optionListItemBySubject = itemListSubject.map((itm => ({ label:decodeURIComponent(itm.title), value:decodeURIComponent(itm.task_id)})))
     const optionResultTask= itemListSubject.map((itm => ({ label:decodeURIComponent(itm.title), value:decodeURIComponent(itm.title)})))
     const optionTaskResultStatus = taskResulStatusObj.map((itm => ({ label:decodeURIComponent(itm.lovi_value), value:decodeURIComponent(itm.lov_item_id)})))
     
@@ -298,30 +655,14 @@ componentDidMount() {
       estimated_duration,
       is_important,
       is_auto_start,
-    //   default_assignor_id: default_assignor_id,
-    //   default_assignor_name: default_assignor_name,
-    //   default_assignee_id: default_assignee_id,
-    //   default_assignee_name: default_assignee_name,
-    //   default_supervisor_id: default_supervisor_id,
-    //   default_supervisor_name: default_supervisor_name,
-    //   default_manager_id: default_manager_id,
-    //   default_manager_name: default_manager_name,
-    //   parent_id: parent_id,
-    //   prev_task_id: prev_task_id,
-    //   prev_task_title: prev_task_title,
       additional_tasks,
-    //   next_task_id: next_task_id,
-    //   next_task_title: next_task_title,
       is_decision,
-    //   task_results: task_results,
-    //   acl_id: acl_id,
-    //   stakeholder_fields: stakeholder_fields,
      } = this.state
     
     return (
       <Fragment>
         <h1 className="h3 display text-primary text-center">Activity</h1>
-            <form className="mt-3 mr-3 ml-3">
+            <form className="mt-3 mr-3 ml-3" onSubmit={this.formSubmit}>
                 <div className="row justify-content-center mb-5">
                     <div className="col-xl-3 col-lg-4 col-md-4">
                         <div className="text-center">
@@ -438,7 +779,7 @@ componentDidMount() {
                               className="basic-single"
                               onChange={this.handlePrevTaskChange}
                               options={optionListItemBySubject}
-                              value={prevTask}
+                              value={prev_task_title}
                               isClearable
                             />
                             </div>
@@ -450,7 +791,7 @@ componentDidMount() {
                               className="basic-single"
                               onChange={this.handleNextTaskChange}
                               options={optionListItemBySubject}
-                              value={nextTask}
+                              value={next_task_title}
                               isClearable
                             />
                             </div>
@@ -544,9 +885,9 @@ componentDidMount() {
                                 <label>View</label>
                                 <Select
                               className="basic-single"
-                              onChange={this.handleNextTaskChange}
+                              onChange={this.handleViewChange}
                               options={optionStakehList}
-                            //   value={prevTask}
+                              value={accViewVal}
                               isClearable
                               isMulti
                             />
@@ -555,9 +896,9 @@ componentDidMount() {
                                 <label>Update</label>
                                 <Select
                               className="basic-single"
-                              onChange={this.handleNextTaskChange}
+                              onChange={this.handleUpdChange}
                               options={optionStakehList}
-                            //   value={prevTask}
+                              value={ accUpdVal}
                               isClearable
                               isMulti
                             />                            
@@ -570,9 +911,9 @@ componentDidMount() {
                                 <label>Remove</label>
                                 <Select
                               className="basic-single"
-                              onChange={this.handleNextTaskChange}
+                              onChange={this.handleRemoveChange}
                               options={optionStakehList}
-                            //   value={prevTask}
+                              value={accRmvVal}
                               isClearable
                               isMulti
                             />                            
@@ -581,9 +922,9 @@ componentDidMount() {
                                 <label>Modify Access</label>
                                 <Select
                               className="basic-single"
-                              onChange={this.handleNextTaskChange}
+                              onChange={this.handleModifyChange}
                               options={optionStakehList}
-                            //   value={prevTask}
+                              value={accModVal}
                               isClearable
                               isMulti
                             />                            
@@ -610,7 +951,8 @@ ActivityWizard.propTypes={
     listWrkFlw:PropTypes.object.isRequired,
     setListAddTask:PropTypes.object.isRequired,
     setListTaskResultTitle:PropTypes.object.isRequired,
-    setListTaskResultStatus:PropTypes.object.isRequired
+    setListTaskResultStatus:PropTypes.object.isRequired,
+    updateActivity: PropTypes.object.isRequired,
 }
 
 const mapStateToProps= state =>({
@@ -620,4 +962,4 @@ const mapStateToProps= state =>({
         listWrkFlw:state.listWrkFlw
 })
     
-export default connect(mapStateToProps, {setListAddTask, setListTaskResultTitle, setListTaskResultStatus})(ActivityWizard)
+export default connect(mapStateToProps, {setListAddTask, setListTaskResultTitle, setListTaskResultStatus, updateActivity})(ActivityWizard)
