@@ -137,9 +137,11 @@ formSubmit=(e)=>{
         task_results: newActObj.task_results,
         acl_id: newActObj.acl_id,
         acl_entries: newActObj.acl_entries,
+        is_enable_auto_scripting: false,
+        auto_scripting: null,
 
-    bio_access_id: bId,
-    action: "SAVE_TASK" 
+        bio_access_id: bId,
+        action: "SAVE_TASK" 
   }       
 
   this.props.addNewActivity(newEmailObj)
@@ -159,11 +161,12 @@ render() {
    } = this.state
    
 
-  const {listEmailObj} = this.props.crtNewReducer
+  const {listEmailObj,stakehList} = this.props.crtNewReducer
   const optionEmailTemp = listEmailObj.map((itm => ({ value: itm.email_template_id, label:decodeURIComponent(itm.name)})))
-
-  const {stakehList} = this.props.crtNewReducer
   const stakehOptions = stakehList.map(itm=>({ value: itm.stakeholder_id, label:decodeURIComponent(itm.full_name), status: true}))
+
+  const {customFieldObj} = this.props.workflowDetail
+  const optionCustomField = customFieldObj.map((itm => ({ value: itm.custom_field_id, label:decodeURIComponent(itm.custom_field_name)})))
 
     return (
       <Fragment>
@@ -199,7 +202,6 @@ render() {
                             />
                     </div>
 
-                  <div className="row form-group">
                     <div className="form-group col">
                         <label>
                             <input name="include_assignee" type="checkbox" onChange={this.handleChange} checked={include_assignee}/> Include Assignee
@@ -223,14 +225,14 @@ render() {
                             <input name="include_stakeholders" type="checkbox" onChange={this.handleChange} checked={include_stakeholders}/> Include Stakeholder
                         </label>
                     </div>
-                  </div>
-
+                  
+                  <div className="form-group col">
                   <div className={include_stakeholders===null||include_stakeholders=== false?"d-none":"autoUpdate row"}>
-                      <div className="col-sm-6 form-group">
+                      <div className="form-group col">
                         <label>Stakeholders</label>
                           <Select
                               onChange={this.handleIncStakehsChange}
-                              options={stakehOptions}
+                              options={optionCustomField}
                               value={incStakeh}
                               isMulti
                               isClearable
@@ -238,7 +240,8 @@ render() {
                         </div>
                   </div>
                   </div>
-          </div> 
+                  </div>
+                  </div>
 
              <div className="">
                     <button type="submit" className="btn btn-primary">Save</button>
