@@ -29,6 +29,19 @@ this.setState({
 
 }
 
+
+// componentDidUpdate(prevProps){
+//   if(prevProps.workflowDetail.activityDet!==this.props.workflowDetail.activityDet){
+//     console.log(prevProps.workflowDetail.activityDet)
+//       const {is_enable_auto_scripting,auto_scripting} = this.props.item
+
+//       this.setState({
+//           is_enable_auto_scripting: is_enable_auto_scripting,            
+//           auto_scripting: auto_scripting   
+//       })      
+//   }
+// }
+
 handleChange=(event)=>{
   // e.preventDefault()
    const target = event.target
