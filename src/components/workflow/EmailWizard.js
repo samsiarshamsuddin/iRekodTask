@@ -4,6 +4,8 @@ import Select from 'react-select'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 
+import {updateActivity} from '../../actions/updateActAction'
+
 class EmailWizard extends Component {
 
   constructor(){
@@ -34,6 +36,7 @@ componentWillMount(){
      include_home ,
      include_owner ,
      include_stakeholders,
+     
   } = this.props.item
 
   
@@ -49,9 +52,88 @@ componentWillMount(){
 
 }
 
+// componentDidUpdate(prevProps){
+//   if(prevProps.workflowDetail.activityDet!==this.props.workflowDetail.activityDet){
+//               console.log(prevProps.workflowDetail.activityDet)
+              
+//       const {
+//           task_id,
+//           subject,
+//           title,
+//           instruction,
+//           estimated_duration ,
+//            is_important,
+//            is_auto_start ,
+//            default_assignor_id ,
+//            default_assignee_id,
+//            default_assignor_name,
+//            default_assignee_name,
+//            default_supervisor_id ,
+//            default_supervisor_name ,
+//            default_manager_id ,
+//            default_manager_name ,
+//            parent_id,
+//            prev_task_id ,
+//            prev_task_title,
+//            additional_tasks ,
+//            next_task_id ,
+//            next_task_title ,
+//            is_decision ,
+//            task_results ,
+//            acl_id ,
+//            stakeholder_fields ,
+
+//                 email_template_id ,
+//      recipients ,
+//      include_assignee ,
+//      include_home ,
+//      include_owner ,
+//      include_stakeholders,
+           
+//         } = this.props.item
+        
+//    this.setState({
+//         task_id: task_id,
+//         title: title,
+//         subject: subject,
+//         instruction: instruction,
+//         estimated_duration: estimated_duration,
+//         is_important: is_important,
+//         is_auto_start: is_auto_start,
+//         default_assignor_id: default_assignor_id,
+//         default_assignee_id: default_assignee_id,
+//         default_assignor_name:default_assignor_name,
+//         default_assignee_name: default_assignee_name,
+//         default_supervisor_id: default_supervisor_id,
+//         default_supervisor_name: default_supervisor_name,
+//         default_manager_id: default_manager_id,
+//         default_manager_name: default_manager_name,
+//         parent_id: parent_id,
+//         prev_task_id: prev_task_id,
+//         prev_task_title: prev_task_title,
+//         additional_tasks: additional_tasks,
+//         next_task_id: next_task_id,
+//         next_task_title: next_task_title,
+//         is_decision: is_decision,
+//         task_results: task_results,
+//         acl_id: acl_id,
+//         stakeholder_fields: stakeholder_fields,
+
+//               email_template_id: email_template_id,
+//       recipients: recipients,
+//       include_assignee: include_assignee,
+//       include_home: include_home,
+//       include_owner: include_owner,
+//       include_stakeholders: include_stakeholders,
+//       })    
+//       }
+//   }
+
+
 handleEmailTempChange=(value)=>{
+  console.log(value)
   this.setState({
-    emailTemp:value,
+    email_template_id:value,
   })
 }
 
@@ -89,10 +171,101 @@ componentDidMount() {
 if (activityDet[0].email_template_id!==""){
 
   this.setState({
-    emailTempName:[{label : emailTemplateName[0].name, value:emailTemplateName[0].name}]
+    email_template_id:[{label : emailTemplateName[0].name, value:emailTemplateName[0].email_template_id}]
         })
 }
- 
+}
+
+formSubmit=(e)=>{
+    e.preventDefault()
+
+    const {user:{bio_access_id:bId}} = this.props.session
+    
+    const {
+            task_id,
+            subject,
+            title,
+            instruction,
+            estimated_duration ,
+             is_important,
+             is_auto_start ,
+             default_assignor_id ,
+             default_assignee_id,
+             default_assignor_name,
+             default_assignee_name,
+             default_supervisor_id ,
+             default_supervisor_name ,
+             default_manager_id ,
+             default_manager_name ,
+             parent_id,
+             prev_task_id ,
+             prev_task_title,
+             additional_tasks ,
+             next_task_id ,
+             next_task_title ,
+             is_decision ,
+             task_results ,
+             acl_id ,
+             acl_entries,
+             stakeholder_fields,
+             is_enable_auto_scripting ,
+             auto_scripting, } = this.props.item
+             
+     console.log(instruction)
+     const { 
+     email_template_id ,
+     recipients ,
+     include_assignee ,
+     include_home ,
+     include_owner ,
+     include_stakeholders,
+     emailTempName} = this.state
+   console.log(email_template_id)
+
+    const updateObj={
+      task_id:task_id,
+      title: title,
+      subject: subject,
+      instruction: instruction,
+      estimated_duration: estimated_duration,
+      is_important: is_important,
+      is_auto_start: is_auto_start,
+      default_assignor_id: default_assignor_id,
+      default_assignor_name: default_assignor_name,
+      default_assignee_id:default_assignee_id,
+      default_assignee_name: default_assignee_name,
+      default_supervisor_id: default_supervisor_id,
+      default_supervisor_name: default_supervisor_name,
+      default_manager_id: default_manager_id,
+      default_manager_name: default_manager_name,
+      parent_id: null,
+      prev_task_id: prev_task_id,
+      prev_task_title: prev_task_title,
+      additional_tasks: null,
+      next_task_id: next_task_id,
+      next_task_title: next_task_title,
+      is_decision: is_decision,
+      task_results: null,
+      acl_id: acl_id,
+      acl_entries: acl_entries,
+
+      email_template_id: email_template_id.value,
+      recipients: null,
+      include_assignee: include_assignee,
+      include_home: include_home,
+      include_owner: include_owner,
+      include_stakeholders: include_stakeholders,
+      stakeholder_fields: null,
+      is_enable_auto_scripting: is_enable_auto_scripting,
+      auto_scripting: auto_scripting,
+
+      bio_access_id: bId,
+      action: "SAVE_TASK" 
+
+    }        
+    // this.props.updateActivity(updateObj)
+    console.log(updateObj)
+    alert("Successful Update")
 
 }
 
@@ -110,7 +283,7 @@ if (activityDet[0].email_template_id!==""){
   const optionEmailTemp = emailObj.map((itm => ({ value: itm.email_template_id, label:decodeURIComponent(itm.name)})))
   const optionCstmFldStkhObj = customFieldObj.map((itm => ({ value: decodeURIComponent(itm.custom_field_name), label:decodeURIComponent(itm.custom_field_name)})))
   console.log(optionCstmFldStkhObj)
-  const { recepients, incStakeh, emailTempName} = this.state
+  const { recepients, incStakeh, emailTempName, email_template_id} = this.state
 
   const {stakehList} = this.props.listWrkFlw
   const stakehOptions = stakehList.map(itm=>({ value: itm.stakeholder_id, label:decodeURIComponent(itm.full_name), status: true}))
@@ -118,7 +291,7 @@ if (activityDet[0].email_template_id!==""){
     return (
       <Fragment>
       <h1 className="h3 display text-primary text-center">Email Notification</h1>
-      <form className="mt-3 mr-3 ml-3">
+      <form className="mt-3 mr-3 ml-3" onSubmit={this.formSubmit}>
               <div className="row justify-content-center mb-5">
                   <div className="col-xl-3 col-lg-4 col-md-4">
                       <div className="text-center">
@@ -133,7 +306,7 @@ if (activityDet[0].email_template_id!==""){
                                 className="basic-single"
                               onChange={this.handleEmailTempChange}
                               options={optionEmailTemp}
-                              value={emailTempName}
+                              value={email_template_id}
                               isClearable
                             />
                     </div>
@@ -190,6 +363,10 @@ if (activityDet[0].email_template_id!==""){
                   </div>
                   </div>
           </div> 
+          <div className="">
+                    <button type="submit" className="btn btn-primary">Save</button>
+                    <button type="button" className="btn btn-secondary">Close</button>
+                </div>
      </form>
       </Fragment>
     )
@@ -201,6 +378,7 @@ EmailWizard.propTypes={
   layout: PropTypes.object.isRequired,  
   workflowDetail:PropTypes.object.isRequired,  
   listWrkFlw: PropTypes.object.isRequired,  
+  updateActivity:PropTypes.object.isRequired,  
 }
 
 const mapStateToProps= state =>({
@@ -210,4 +388,4 @@ const mapStateToProps= state =>({
       listWrkFlw:state.listWrkFlw,
 })
   
-export default connect(mapStateToProps)(EmailWizard)
+export default connect(mapStateToProps, {updateActivity})(EmailWizard)
