@@ -10,7 +10,6 @@ class NewActivityWizard extends Component {
   constructor(){
     super()
     this.state={
-        subject: [],
         stakehValAssignorNew: [],
         stakehValAssigneeNew: [],
         stakehValSupervisorNew: [],
@@ -217,11 +216,11 @@ class NewActivityWizard extends Component {
         hasDecision,
         prevTaskNew,
         nextTaskNew,
-        accViewVal:[],
-        accUpdVal:[],
-        accRmvVal:[],
-        accModVal:[],
-        addTaskTitle:[],
+        accViewVal,
+        accUpdVal,
+        accRmvVal,
+        accModVal,
+        addTaskTitle,
         title,
         subject,
         instruction,
@@ -681,9 +680,9 @@ NewActivityWizard.propTypes={
   workflowDetail:PropTypes.object.isRequired,  
   crtNewReducer:PropTypes.object.isRequired, 
   listWrkFlw:PropTypes.object.isRequired, 
-  setItemListSubject:PropTypes.object.isRequired, 
-  setListAddTask:PropTypes.object.isRequired, 
-  addNewActivity: PropTypes.object.isRequired,
+  setItemListSubject:PropTypes.func.isRequired, 
+  setListAddTask:PropTypes.func.isRequired, 
+  addNewActivity: PropTypes.func.isRequired,
 }
 
 const mapStateToProps= state =>({
