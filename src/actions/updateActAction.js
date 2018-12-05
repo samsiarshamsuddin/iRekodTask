@@ -26,3 +26,5 @@ export const setActivityDetailsUpdate=(activityDet)=>dispatch=>{
             })
 
 }
+
+
