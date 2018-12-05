@@ -3,9 +3,10 @@ import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import ListSubject from './ListSubject'
 
+
 import Breadcrumb from '../layout/Breadcrumb'
-import {setActivePage,setPageTitle} from '../../actions/layoutInitAction'
-import {setCardView, setSelWorkFlow, setShowFab, setSelDetails, setStakehList} from '../../actions/authListWorkFlow'
+import {setActivePage,setPageTitle, setPageSubject} from '../../actions/layoutInitAction'
+import {setCardView, setSelWorkFlow, setShowFab, setSelDetails, setStakehList, listWorkFlowSub} from '../../actions/authListWorkFlow'
 import {setItemListSubject, setEmailStore, setListActivityDetails,setDelBtn, setTaskResult} from '../../actions/workflowDetailAction'
 import {setEmailStoreNew} from '../../actions/createNewActAction'
 import {setActivityDetailsUpdate} from '../../actions/updateActAction'
@@ -34,7 +35,7 @@ class ListWorkflow extends Component {
             const {listSub}=this.props.listWrkFlw  
             // console.log(listSub)
             const listWkflw = listSub.map(res=>({...res,isSel:false}))
-             
+            //  console.log(listWkflw)
             this.setState({
                 workList:listWkflw
             })
@@ -45,10 +46,11 @@ class ListWorkflow extends Component {
     setActivePage=(FabRec)=>{
         // e.preventDefault()
         const {user:{bio_access_id:bId}}=this.props.session
-        const {wrkflSel}=this.props.listWrkFlw
+        const {wrkflSel, selDetails}=this.props.listWrkFlw
+        const pageSubject = selDetails.map(itm => itm.subject)
+        this.props.setPageSubject(pageSubject)
         this.props.setActivePage(FabRec)
         
-
         //Activity Detail
         const activityDet={
             task_id:wrkflSel,
@@ -66,6 +68,7 @@ class ListWorkflow extends Component {
             action: "LIST_TASK_RESULT",
             bio_access_id: bId      
             }
+
 
         this.props.setListActivityDetails(activityDet)
         this.props.setActivityDetailsUpdate(activityDet)  
@@ -149,7 +152,8 @@ class ListWorkflow extends Component {
       delBtn=()=>{
         // const {wrkflowSelect} = this.state
         const {user:{bio_access_id:bId}} = this.props.session  
-        const {wrkflSel}=this.props.listWrkFlw    
+        const {wrkflSel, listSub}=this.props.listWrkFlw 
+          
         //  console.log(wrkflSel)       
 
         const wrkflowObj={
@@ -158,10 +162,13 @@ class ListWorkflow extends Component {
         
         }
         this.props.setDelBtn(wrkflowObj)
-        alert("Successful Deleted")
-        
 
-       
+        const itemDeleted = listSub.filter(itm => itm.task_id !== wrkflSel)
+        // console.log(vv)
+        this.props.listWorkFlowSub(itemDeleted)
+
+        alert("Successful Deleted")
+  
     } 
 
 
@@ -244,7 +251,7 @@ class ListWorkflow extends Component {
                         </div>
 
                     </div>
-                    <ListSubject />     
+                    <ListSubject /> 
         </header>
         
         <div className="row">
@@ -279,6 +286,8 @@ ListWorkflow.propTypes={
     setTaskResult: PropTypes.func.isRequired,
     setPageTitle:PropTypes.func.isRequired,
     setActivityDetailsUpdate: PropTypes.func.isRequired,
+    setPageSubject:PropTypes.func.isRequired,
+    listWorkFlowSub:PropTypes.func.isRequired,
 
   }
   const mapStateToProps= state =>({
@@ -297,5 +306,5 @@ export default connect(mapStateToProps,
         setItemListSubject,
         setEmailStore, setEmailStoreNew, setDelBtn, setTaskResult,
         setPageTitle,
-        setActivityDetailsUpdate})(ListWorkflow)
+        setActivityDetailsUpdate, setPageSubject, listWorkFlowSub})(ListWorkflow)
 
