@@ -6,7 +6,7 @@ const NewFolderTabHeader =({activeEditor,active,isContainer})=>{
         const sendActive=(e)=>{
             e.preventDefault()
             activeEditor(e.target.name)
-            console.log(e.target.name)
+            // console.log(e.target.name)
             // console.log(activeEditor)
         }
 
