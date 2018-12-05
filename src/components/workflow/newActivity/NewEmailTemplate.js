@@ -260,7 +260,7 @@ NewEmailTemplate.propTypes={
   workflowDetail:PropTypes.object.isRequired,  
   listWrkFlw: PropTypes.object.isRequired,  
   crtNewReducer:  PropTypes.object.isRequired,
-  addNewActivity:PropTypes.object.isRequired,
+  addNewActivity:PropTypes.func.isRequired,
 }
 
 const mapStateToProps= state =>({
