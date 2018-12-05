@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
-import {setActivePage,setPageTitle} from '../../actions/layoutInitAction'
+import {setActivePage,setPageTitle, setPageSubject} from '../../actions/layoutInitAction'
 import {setListWorkFlow,setListofSubject} from '../../actions/authListWorkFlow'
 import {setStakehListNew} from '../../actions/createNewActAction'
 import {setCustomField} from '../../actions/workflowDetailAction'
@@ -65,13 +65,13 @@ class SideNav extends React.Component {
       object_id:"STKH"    
   }
  
-
+     const pageSubject= ""
     this.props.setStakehListNew(stakehList)
     this.props.setListWorkFlow(listWrkFlwObj)
     this.props.setListofSubject(listofSubjectObj)
     this.props.setPageTitle(e.target.name)
     this.props.setCustomField(customFieldObj)
-    
+    this.props.setPageSubject(pageSubject)
   }
 
 
@@ -106,28 +106,6 @@ class SideNav extends React.Component {
               <div className="userIcon"><img src={require(`../../img/folder.svg`)} alt="doc" className="img-fluid p-1"/></div>Workflow </a>
 
               <ul id="chartsDropdown" className={this.state.folderToggle ? 'collapse list-unstyled show' : 'collapse list-unstyled'}>
-                {/* <li>
-                  <a href="/" onClick={this.setActivePage} data-pagename="folder">
-                    <div className="userIcon" data-pagename="folder">
-                        <img src={require(`../../img/folder3.svg`)} alt="doc" className="img-fluid p-1" data-pagename="folder"/>
-                    </div>Create
-                  </a>
-                </li>
-                <li>
-                    <a href="/" onClick={this.setActivePage} data-pagename="editWorkflow">
-                    <div className="userIcon" data-pagename="editWorkflow">
-                    <img src={require(`../../img/loupe.svg`)} alt="doc" className="img-fluid p-1" data-pagename="editWorkflow" />
-                    </div>Edit
-                    </a>
-              </li>
-
-              <li>
-                    <a href="/" onClick={this.setActivePage} data-pagename="viewWorkflow">
-                    <div className="userIcon" data-pagename="viewWorkflow">
-                    <img src={require(`../../img/loupe.svg`)} alt="doc" className="img-fluid p-1" data-pagename="viewWorkflow" />
-                    </div>View
-                    </a>
-              </li> */}
 
               <li>
                     <a href="/" onClick={this.setActivePage} data-pagename="listOfWorkflow" name="List Workflow" >
@@ -238,10 +216,13 @@ SideNav.propTypes={
     setListofSubject: PropTypes.func.isRequired,
     setPageTitle:PropTypes.func.isRequired,
     setStakehListNew:PropTypes.func.isRequired,
-    setCustomField:PropTypes.func.isRequired
+    setCustomField:PropTypes.func.isRequired,
+    setPageSubject:PropTypes.func.isRequired,
   }
   const mapStateToProps= state =>({
     session:state.session,
     layout:state.layout
   })
-  export default connect(mapStateToProps,{setActivePage,setListWorkFlow,setListofSubject,setPageTitle,setStakehListNew,setCustomField})(SideNav)
+  export default connect(mapStateToProps,{setActivePage,setListWorkFlow,setListofSubject,
+    setPageTitle,setStakehListNew,setCustomField,
+    setPageSubject})(SideNav)
