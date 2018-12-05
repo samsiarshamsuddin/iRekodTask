@@ -41,7 +41,7 @@ export const listWorkFlowSub=(listSub)=>dispatch=>{
         type: LIST_OF_CHILDSUBJECT,
         payload: listSub
         })
- }
+}
 
 
  export const setCardView=(cardStatus)=>{
