@@ -6,7 +6,7 @@ import 'rc-checkbox/assets/index.css';
 import { Button } from 'reactstrap';
 
 import {setListAddTask, setListTaskResultTitle, setListTaskResultStatus} from '../../actions/workflowDetailAction'
-import {updateActivity} from '../../actions/updateActAction'
+import {updateActivity, setActivityDetailsUpdate} from '../../actions/updateActAction'
 
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
@@ -25,7 +25,7 @@ class ActivityWizard extends Component {
             default_assignor_id: null,
             default_assignor_name: null,
             default_assignee_id: null,
-            default_assignee_name: null,
+            default_assignee_name: [],
             default_supervisor_id: null,
             default_supervisor_name: null,
             default_manager_id: null,
@@ -41,7 +41,7 @@ class ActivityWizard extends Component {
             acl_id: null,
             stakeholder_fields: null,   
             stakehValAssignor: [],
-            stakehValAssignee: [],
+            // default_assignee_name: [],
             stakehValSupervisor: [],
             stakehValManager: [],
             prevTask: [],
@@ -63,7 +63,7 @@ class ActivityWizard extends Component {
 
     componentWillMount(){
     const {activityDet}=this.props.workflowDetail  
-    console.log(activityDet)
+    // console.log(activityDet)
       const {
         task_id,
         subject,
@@ -216,7 +216,7 @@ class ActivityWizard extends Component {
 
   handleAssigneeChange=(value)=>{
     this.setState({
-      stakehValAssignee:value
+      default_assignee_name:value
     })
 }
 
@@ -240,8 +240,9 @@ handlePrevTaskChange=(value)=>{
 }
 
 handleNextTaskChange=(value)=>{
+    console.log(value)
     this.setState({
-        nextTask:value
+        next_task_title:value
       })
 }
 
@@ -298,7 +299,7 @@ handleViewChange=(value)=>{
 
 componentDidMount() {
     const {stakehList} = this.props.listWrkFlw
-    const {itemListSubject, activityDet} = this.props.workflowDetail
+    const {itemListSubject} = this.props.workflowDetail
     const {default_assignee_name, default_assignor_name, default_manager_name, prev_task_title, default_supervisor_name, next_task_title, additional_tasks} = this.props.item
     const stakehOptionsAssignee = stakehList.filter(itm => itm.full_name === default_assignee_name)
     const stakehOptionsAssignor = stakehList.filter(itm => itm.full_name === default_assignor_name)
@@ -376,10 +377,10 @@ componentDidMount() {
     // set state for assignee name selection
     {default_assignee_name === "" ?
     this.setState({
-        stakehValAssignee:[{label : "", value: ""}],
+        default_assignee_name:({label : "", value: ""}),
     }) : 
     this.setState({
-        stakehValAssignee:[{label : stakehOptionsAssignee[0].full_name, value: stakehOptionsAssignee[0].stakeholder_id}]
+        default_assignee_name:({label : stakehOptionsAssignee[0].full_name, value: stakehOptionsAssignee[0].stakeholder_id})
             })
     }
 
@@ -407,19 +408,19 @@ componentDidMount() {
     // set state for prev task name selection
     {prev_task_title === ""  ?
     this.setState({
-        prev_task_title:[{label : "", value: ""}],
+        prev_task_title:({label : "", value: ""}),
     }) : 
     this.setState({
-        prev_task_title:[{label : listOptionPrev[0].title, value: listOptionPrev[0].task_id}],
+        prev_task_title:({label : listOptionPrev[0].title, value: listOptionPrev[0].task_id}),
             })
     }
 
     {next_task_title === "" ?
     this.setState({
-        next_task_title:[{label : "", value: ""}],
+        next_task_title:({label : "", value: ""}),
     }) : 
     this.setState({
-        next_task_title:[{label : listOptionNext[0].title, value: listOptionNext[0].task_id}],
+        next_task_title:({label : listOptionNext[0].title, value: listOptionNext[0].task_id}),
             })
     }
 
@@ -429,10 +430,11 @@ componentDidMount() {
        
     const {user:{bio_access_id:bId}} = this.props.session
     const {wrkflSel} = this.props.listWrkFlw
-    const {activityDet} = this.props.workflowDetail
-    console.log(activityDet[0].acl_id)
+    // const {activityDet} = this.props.workflowDetail
+    // const {updAct, activityDet} = this.props.updActReducer
+  
     const { 
-    stakehValAssignee,
+    
     stakehValAssignor,
     stakehValManager,
     stakehValSupervisor,
@@ -442,12 +444,13 @@ componentDidMount() {
     estimated_duration,
     is_important,
     is_auto_start,
-    prevTask,
-    nextTask,
-    is_decision
+    is_decision,
+    next_task_title,
+    prev_task_title,
+    default_assignee_name,
     } = this.state
     e.preventDefault()
- 
+
     const {
      email_template_id ,
      recipients ,
@@ -458,12 +461,7 @@ componentDidMount() {
      is_enable_auto_scripting ,
      auto_scripting,
      acl_id,
-     next_task_title,
-     next_task_id,
-     prev_task_title,
-     prev_task_id,
-     default_assignee_name,
-     
+   
     } = this.props.item
 
     const updateObj={
@@ -476,18 +474,18 @@ componentDidMount() {
       is_auto_start: is_auto_start,
       default_assignor_id: stakehValAssignor.value,
       default_assignor_name: stakehValAssignor.label,
-      default_assignee_id:stakehValAssignee.value,
-      default_assignee_name: stakehValAssignee.label,
+      default_assignee_id:default_assignee_name.value,
+      default_assignee_name: default_assignee_name.label,
       default_supervisor_id: stakehValSupervisor.value,
       default_supervisor_name: stakehValSupervisor.label,
       default_manager_id: stakehValManager.value,
       default_manager_name: stakehValManager.label,
       parent_id: null,
-      prev_task_id: prev_task_id,
-      prev_task_title: prev_task_title,
+      prev_task_id: prev_task_title.value,
+      prev_task_title: prev_task_title.label,
       additional_tasks: null,
-      next_task_id: next_task_id,
-      next_task_title: next_task_title,
+      next_task_id: next_task_title.value,
+      next_task_title: next_task_title.label,
       is_decision: is_decision,
       task_results: null,
       acl_id: acl_id,
@@ -506,7 +504,8 @@ componentDidMount() {
       bio_access_id: bId,
       action: "SAVE_TASK" 
 
-    }        
+    }
+
     this.props.updateActivity(updateObj)
     console.log(updateObj)
     alert("Successful Update")
@@ -640,7 +639,7 @@ componentDidMount() {
   
     const {stakehList} = this.props.listWrkFlw
     const {itemListSubject, addTask, taskResulStatusObj, tskRsltTitle, tskRsltStatus} = this.props.workflowDetail
-    const { stakehValAssignee, stakehValAssignor, stakehValSupervisor, stakehValManager, prevTask, addTaskTitle, nextTask, prev_task_title, number,taskResStat, accViewVal, accUpdVal, accRmvVal, accModVal, next_task_title} = this.state
+    const { default_assignee_name, stakehValAssignor, stakehValSupervisor, stakehValManager, addTaskTitle, prev_task_title,taskResStat, accViewVal, accUpdVal, accRmvVal, accModVal, next_task_title} = this.state
     const optionStakehList = stakehList.map((itm => ({ value: itm.stakeholder_id, label:decodeURIComponent(itm.full_name)})))
     const optionListItemBySubject = itemListSubject.map((itm => ({ label:decodeURIComponent(itm.title), value:decodeURIComponent(itm.task_id)})))
     const optionResultTask= itemListSubject.map((itm => ({ label:decodeURIComponent(itm.title), value:decodeURIComponent(itm.title)})))
@@ -648,7 +647,7 @@ componentDidMount() {
     
     
     const {
-      task_id: task_id,
+      task_id,
       title,
       subject,
       instruction,
@@ -737,7 +736,7 @@ componentDidMount() {
                               className="basic-single"
                               onChange={this.handleAssigneeChange}
                               options={optionStakehList}
-                              value={stakehValAssignee}
+                              value={default_assignee_name}
                               isClearable
                             />
                             </div>
@@ -949,17 +948,21 @@ ActivityWizard.propTypes={
     layout: PropTypes.object.isRequired,  
     workflowDetail:PropTypes.object.isRequired,  
     listWrkFlw:PropTypes.object.isRequired,
-    setListAddTask:PropTypes.object.isRequired,
-    setListTaskResultTitle:PropTypes.object.isRequired,
-    setListTaskResultStatus:PropTypes.object.isRequired,
-    updateActivity: PropTypes.object.isRequired,
+    setListAddTask:PropTypes.func.isRequired,
+    setListTaskResultTitle:PropTypes.func.isRequired,
+    setListTaskResultStatus:PropTypes.func.isRequired,
+    updateActivity: PropTypes.func.isRequired,
+    updActReducer: PropTypes.object.isRequired,
+    setActivityDetailsUpdate: PropTypes.func.isRequired,
 }
 
 const mapStateToProps= state =>({
         session:state.session,
         layout:state.layout,
         workflowDetail:state.workflowDetail,
-        listWrkFlw:state.listWrkFlw
+        listWrkFlw:state.listWrkFlw,
+        updActReducer:state.updActReducer,
 })
     
-export default connect(mapStateToProps, {setListAddTask, setListTaskResultTitle, setListTaskResultStatus, updateActivity})(ActivityWizard)
+export default connect(mapStateToProps, {setListAddTask, setListTaskResultTitle, setListTaskResultStatus, 
+    updateActivity, setActivityDetailsUpdate})(ActivityWizard)
