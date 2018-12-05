@@ -87,7 +87,7 @@ class NewActivity extends Component {
 NewActivity.propTypes={
   session: PropTypes.object.isRequired,  
   layout:PropTypes.object.isRequired,
-  setWizardPageNew:PropTypes.object.isRequired,
+  setWizardPageNew:PropTypes.func.isRequired,
   crtNewReducer:PropTypes.object.isRequired,
 }
 
