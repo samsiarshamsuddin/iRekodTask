@@ -1,4 +1,4 @@
-import {PAGE_CLASS,TOGGLE_SIDENAV,SIDENAV_CLASS,ACTIVE_PAGE,PAGE_TITLE} from './types'
+import {PAGE_CLASS,TOGGLE_SIDENAV,SIDENAV_CLASS,ACTIVE_PAGE,PAGE_TITLE, PAGE_SUBJECT} from './types'
 
 
 export const setPageClass=(pageClass)=>{
@@ -35,5 +35,12 @@ export const setNavToggle=(toggleVal, pageClass, navClass)=>dispatch=>{
     return {
         type:PAGE_TITLE,
         payload:pagen
+    }
+ }
+
+ export const setPageSubject=(pageSubject)=>{
+    return {
+        type:PAGE_SUBJECT,
+        payload:pageSubject
     }
  }
