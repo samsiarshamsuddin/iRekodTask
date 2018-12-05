@@ -180,74 +180,43 @@ formSubmit=(e)=>{
     e.preventDefault()
 
     const {user:{bio_access_id:bId}} = this.props.session
+    const {activity_Store} = this.props.workflowDetail
     
-    const {
-            task_id,
-            subject,
-            title,
-            instruction,
-            estimated_duration ,
-             is_important,
-             is_auto_start ,
-             default_assignor_id ,
-             default_assignee_id,
-             default_assignor_name,
-             default_assignee_name,
-             default_supervisor_id ,
-             default_supervisor_name ,
-             default_manager_id ,
-             default_manager_name ,
-             parent_id,
-             prev_task_id ,
-             prev_task_title,
-             additional_tasks ,
-             next_task_id ,
-             next_task_title ,
-             is_decision ,
-             task_results ,
-             acl_id ,
-             acl_entries,
-             stakeholder_fields,
-             is_enable_auto_scripting ,
-             auto_scripting, } = this.props.item
-             
-     console.log(instruction)
+
      const { 
      email_template_id ,
      recipients ,
      include_assignee ,
      include_home ,
      include_owner ,
-     include_stakeholders,
-     emailTempName} = this.state
-   console.log(email_template_id)
+     include_stakeholders} = this.state
 
     const updateObj={
-      task_id:task_id,
-      title: title,
-      subject: subject,
-      instruction: instruction,
-      estimated_duration: estimated_duration,
-      is_important: is_important,
-      is_auto_start: is_auto_start,
-      default_assignor_id: default_assignor_id,
-      default_assignor_name: default_assignor_name,
-      default_assignee_id:default_assignee_id,
-      default_assignee_name: default_assignee_name,
-      default_supervisor_id: default_supervisor_id,
-      default_supervisor_name: default_supervisor_name,
-      default_manager_id: default_manager_id,
-      default_manager_name: default_manager_name,
+      task_id:activity_Store[0].task_id,
+      title: activity_Store[0].title,
+      subject: activity_Store[0].subject,
+      instruction: activity_Store[0].instruction,
+      estimated_duration: activity_Store[0].estimated_duration,
+      is_important: activity_Store[0].is_important,
+      is_auto_start: activity_Store[0].is_auto_start,
+      default_assignor_id: activity_Store[0].default_assignor_id,
+      default_assignor_name: activity_Store[0].default_assignor_name,
+      default_assignee_id:activity_Store[0].default_assignee_id,
+      default_assignee_name: activity_Store[0].default_assignee_name,
+      default_supervisor_id: activity_Store[0].default_supervisor_id,
+      default_supervisor_name: activity_Store[0].default_supervisor_name,
+      default_manager_id: activity_Store[0].default_manager_id,
+      default_manager_name: activity_Store[0].default_manager_name,
       parent_id: null,
-      prev_task_id: prev_task_id,
-      prev_task_title: prev_task_title,
+      prev_task_id: activity_Store[0].prev_task_id,
+      prev_task_title: activity_Store[0].prev_task_title,
       additional_tasks: null,
-      next_task_id: next_task_id,
-      next_task_title: next_task_title,
-      is_decision: is_decision,
+      next_task_id: activity_Store[0].next_task_id,
+      next_task_title: activity_Store[0].next_task_title,
+      is_decision: activity_Store[0].is_decision,
       task_results: null,
-      acl_id: acl_id,
-      acl_entries: acl_entries,
+      acl_id: activity_Store[0].acl_id,
+      acl_entries: activity_Store[0].acl_entries,
 
       email_template_id: email_template_id.value,
       recipients: null,
@@ -256,14 +225,14 @@ formSubmit=(e)=>{
       include_owner: include_owner,
       include_stakeholders: include_stakeholders,
       stakeholder_fields: null,
-      is_enable_auto_scripting: is_enable_auto_scripting,
-      auto_scripting: auto_scripting,
+      is_enable_auto_scripting: activity_Store[0].is_enable_auto_scripting,
+      auto_scripting: activity_Store[0].auto_scripting,
 
       bio_access_id: bId,
       action: "SAVE_TASK" 
 
-    }        
-    // this.props.updateActivity(updateObj)
+    }   
+    this.props.updateActivity(updateObj)
     console.log(updateObj)
     alert("Successful Update")
 
@@ -283,7 +252,7 @@ formSubmit=(e)=>{
   const optionEmailTemp = emailObj.map((itm => ({ value: itm.email_template_id, label:decodeURIComponent(itm.name)})))
   const optionCstmFldStkhObj = customFieldObj.map((itm => ({ value: decodeURIComponent(itm.custom_field_name), label:decodeURIComponent(itm.custom_field_name)})))
   console.log(optionCstmFldStkhObj)
-  const { recepients, incStakeh, emailTempName, email_template_id} = this.state
+  const { recepients, incStakeh, email_template_id} = this.state
 
   const {stakehList} = this.props.listWrkFlw
   const stakehOptions = stakehList.map(itm=>({ value: itm.stakeholder_id, label:decodeURIComponent(itm.full_name), status: true}))
@@ -379,6 +348,7 @@ EmailWizard.propTypes={
   workflowDetail:PropTypes.object.isRequired,  
   listWrkFlw: PropTypes.object.isRequired,  
   updateActivity:PropTypes.object.isRequired,  
+  updActReducer:PropTypes.object.isRequired, 
 }
 
 const mapStateToProps= state =>({
@@ -386,6 +356,7 @@ const mapStateToProps= state =>({
       layout:state.layout,
       workflowDetail:state.workflowDetail,
       listWrkFlw:state.listWrkFlw,
+      updActReducer:state.updActReducer,
 })
   
 export default connect(mapStateToProps, {updateActivity})(EmailWizard)
