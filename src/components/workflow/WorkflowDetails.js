@@ -27,7 +27,7 @@ class WorkflowDetails extends Component {
         bio_access_id: bId      
     }
     this.props.setActivityStore(activityObj)
-
+console.log(activityObj)
     }
 
     nextPage=(param)=>{
@@ -56,15 +56,7 @@ render() {
 
   return (
   <Fragment>
-        {/* <div className="breadcrumb-holder">
-           <div className="container-fluid">
-               <div className="breadcrumb">
-                   <div className="breadcrumb-item"><a href='/' data-pagename="dashboard">Home</a></div>
-                   <div className="breadcrumb-item"><a className="breadcrumb-item" href='/' data-pagename="index" onClick={this.setActivePage}>{pageTitle}</a></div>
-                   <div  className="breadcrumb-item active">{decodeURIComponent(item.full_name)}</div>
-               </div>
-           </div>
-       </div>   */}
+
 
        <div className="breadcrumb-holder">
         <div className="container-fluid">
