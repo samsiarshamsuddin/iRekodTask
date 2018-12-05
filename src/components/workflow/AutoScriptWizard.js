@@ -3,6 +3,8 @@ import React, { Component, Fragment } from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 
+import {updateActivity} from '../../actions/updateActAction'
+
 class AutoScriptWizard extends Component {
 
   constructor(){
@@ -53,12 +55,72 @@ this.setState({
   }) 
 } 
 
+
+formSubmit=(e)=>{
+  e.preventDefault()
+
+  const {user:{bio_access_id:bId}} = this.props.session
+  const {activity_Store} = this.props.workflowDetail
+  
+
+   const { 
+    is_enable_auto_scripting ,
+    auto_scripting ,} = this.state
+
+  const updateObj={
+    task_id:activity_Store[0].task_id,
+    title: activity_Store[0].title,
+    subject: activity_Store[0].subject,
+    instruction: activity_Store[0].instruction,
+    estimated_duration: activity_Store[0].estimated_duration,
+    is_important: activity_Store[0].is_important,
+    is_auto_start: activity_Store[0].is_auto_start,
+    default_assignor_id: activity_Store[0].default_assignor_id,
+    default_assignor_name: activity_Store[0].default_assignor_name,
+    default_assignee_id:activity_Store[0].default_assignee_id,
+    default_assignee_name: activity_Store[0].default_assignee_name,
+    default_supervisor_id: activity_Store[0].default_supervisor_id,
+    default_supervisor_name: activity_Store[0].default_supervisor_name,
+    default_manager_id: activity_Store[0].default_manager_id,
+    default_manager_name: activity_Store[0].default_manager_name,
+    parent_id: activity_Store[0].parent_id,
+    prev_task_id: activity_Store[0].prev_task_id,
+    prev_task_title: activity_Store[0].prev_task_title,
+    additional_tasks: null,
+    next_task_id: activity_Store[0].next_task_id,
+    next_task_title: activity_Store[0].next_task_title,
+    is_decision: activity_Store[0].is_decision,
+    task_results: null,
+    acl_id: activity_Store[0].acl_id,
+    acl_entries: activity_Store[0].acl_entries,
+
+    email_template_id: activity_Store[0].email_template_id,
+    recipients: null,
+    include_assignee: activity_Store[0].include_assignee,
+    include_home: activity_Store[0].include_home,
+    include_owner: activity_Store[0].include_owner,
+    include_stakeholders: activity_Store[0].include_stakeholders,
+    stakeholder_fields: null,
+
+    is_enable_auto_scripting: is_enable_auto_scripting,
+    auto_scripting: auto_scripting,
+
+    bio_access_id: bId,
+    action: "SAVE_TASK" 
+
+  }   
+  this.props.updateActivity(updateObj)
+  console.log(updateObj)
+  alert("Successful Update")
+
+}
+
   render() {
     const { is_enable_auto_scripting, auto_scripting} = this.state
     return (
       <Fragment>
       <h1 className="h3 display text-primary text-center">Auto Script</h1>
-      <form className="mt-3 mr-3 ml-3">
+      <form className="mt-3 mr-3 ml-3" onSubmit={this.formSubmit}>
               <div className="row justify-content-center mb-5">
                   <div className="col-xl-3 col-lg-4 col-md-4">
                       <div className="text-center">
@@ -79,6 +141,10 @@ this.setState({
                     </div>
                   </div>
           </div> 
+          <div className="">
+                    <button type="submit" className="btn btn-primary">Save</button>
+                    <button type="button" className="btn btn-secondary">Close</button>
+                </div>
      </form>
       </Fragment>
     )
@@ -89,6 +155,7 @@ AutoScriptWizard.propTypes={
   session: PropTypes.object.isRequired,
   layout: PropTypes.object.isRequired,  
   workflowDetail:PropTypes.object.isRequired, 
+  updateActivity:PropTypes.object.isRequired, 
 }
 
 const mapStateToProps= state =>({
@@ -97,5 +164,5 @@ const mapStateToProps= state =>({
       workflowDetail:state.workflowDetail,
 })
   
-export default connect(mapStateToProps)(AutoScriptWizard)
+export default connect(mapStateToProps, {updateActivity})(AutoScriptWizard)
 
