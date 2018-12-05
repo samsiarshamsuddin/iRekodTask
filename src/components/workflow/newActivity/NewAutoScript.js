@@ -128,7 +128,7 @@ formSubmit=(e)=>{
 NewAutoScript.propTypes={
   session: PropTypes.object.isRequired,
   layout: PropTypes.object.isRequired,  
-  addNewActivity:PropTypes.object.isRequired, 
+  addNewActivity:PropTypes.func.isRequired, 
   crtNewReducer:PropTypes.object.isRequired
 }
 
