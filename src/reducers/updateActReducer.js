@@ -2,7 +2,7 @@ import {UPDATE_ACTIVITY, LIST_UPDATE_ACTIVITY} from '../actions/types'
 
 const initialState={
     updAct:[],
-    activityDet : []
+    activityDet : [],
 }
 
 export default function(state = initialState, action){
