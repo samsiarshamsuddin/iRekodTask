@@ -69,11 +69,11 @@ class ListWorkflow extends Component {
             bio_access_id: bId      
             }
 
-
         this.props.setListActivityDetails(activityDet)
         this.props.setActivityDetailsUpdate(activityDet)  
         this.props.setEmailStore(emailObj)
-        this.props.setTaskResult(taskResulStatusObj)        
+        this.props.setTaskResult(taskResulStatusObj) 
+    
     }
 
     createNewActivity=(e)=>{
