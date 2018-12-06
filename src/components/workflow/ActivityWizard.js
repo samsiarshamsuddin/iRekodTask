@@ -63,6 +63,7 @@ class ActivityWizard extends Component {
 
     componentWillMount(){
     const {activityDet}=this.props.workflowDetail  
+   
     // console.log(activityDet)
       const {
         task_id,
@@ -307,6 +308,8 @@ componentDidMount() {
     const stakehOptionSupervisor = stakehList.filter(itm => itm.full_name === default_supervisor_name)
     const listOptionPrev = itemListSubject.filter(itm => itm.title=== prev_task_title)
     const listOptionNext = itemListSubject.filter(itm => itm.title=== next_task_title)
+
+  
     // console.log(listOptionNext.task_id)
     const {acl_entries} = this.props.item
 
@@ -431,7 +434,7 @@ componentDidMount() {
     const {user:{bio_access_id:bId}} = this.props.session
     const {wrkflSel} = this.props.listWrkFlw
     // const {activityDet} = this.props.workflowDetail
-    // const {updAct, activityDet} = this.props.updActReducer
+    const {activity_Store} = this.props.workflowDetail
   
     const { 
     
@@ -491,15 +494,15 @@ componentDidMount() {
       acl_id: acl_id,
       acl_entries: this.Aclselected(),
 
-      email_template_id: email_template_id,
-      recipients: null,
-      include_assignee: include_assignee,
-      include_home: include_home,
-      include_owner: include_owner,
-      include_stakeholders: include_stakeholders,
-      stakeholder_fields: null,
-      is_enable_auto_scripting: is_enable_auto_scripting,
-      auto_scripting: auto_scripting,
+      email_template_id: activity_Store[0].email_template_id,
+      recipients: activity_Store[0].recipients,
+      include_assignee: activity_Store[0].include_assignee,
+      include_home: activity_Store[0].include_home,
+      include_owner: activity_Store[0].include_owner,
+      include_stakeholders: activity_Store[0].include_stakeholders,
+      stakeholder_fields: activity_Store[0].stakeholder_fields,
+      is_enable_auto_scripting: activity_Store[0].is_enable_auto_scripting,
+      auto_scripting: activity_Store[0].auto_scripting,
 
       bio_access_id: bId,
       action: "SAVE_TASK" 
