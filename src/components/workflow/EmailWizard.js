@@ -4,7 +4,7 @@ import Select from 'react-select'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 
-import {updateActivity} from '../../actions/updateActAction'
+import {updateActivity, setRecipients, taskEmailRecipients, setIncStakeh} from '../../actions/updateActAction'
 
 class EmailWizard extends Component {
 
@@ -13,7 +13,7 @@ class EmailWizard extends Component {
     this.state={
         task_id: null,
         emailTemp:[],
-        recepients:[],
+        recipients:[],
         include_assignee: null,
         include_home: null,
         include_owner: null,
@@ -21,33 +21,38 @@ class EmailWizard extends Component {
         email_template_id: null,
         recipients: null,
         incStakeh:[],
-        emailTempName: ""
+        emailTempName: "",
+        receipientDetails:"",
+       
         
     }        
 }  
+
 
 
 componentWillMount(){
 
   const {
      email_template_id ,
-     recipients ,
+     recipients,
      include_assignee ,
      include_home ,
      include_owner ,
      include_stakeholders,
-     
+     stakeholder_fields,
   } = this.props.item
 
+  const recpnts = recipients.map(itm=>({ value: itm.recipient_id, label:decodeURIComponent(itm.recipient_name)} ))
+  const stakehF = stakeholder_fields.map(itm=>({ value: itm.stakeholder_field_id, label:decodeURIComponent(itm.stakeholder_field_label)} ))
   
     this.setState({
       email_template_id: email_template_id,
-      recipients: recipients,
+      receipientDetails: recpnts,
       include_assignee: include_assignee,
       include_home: include_home,
       include_owner: include_owner,
       include_stakeholders: include_stakeholders,
-      
+      incStakeh:stakehF
     })    
 
 }
@@ -137,13 +142,29 @@ handleEmailTempChange=(value)=>{
   })
 }
 
-handleRecepientsChange=(value)=>{
+handleReceipientsChange=(value)=>{
+
+   const viewSource = value.map(item =>({
+    recipient_id: item.value,
+    recipient_name: item.label
+}))
+
+this.props.setRecipients(viewSource)
+
   this.setState({
-    recepients:value,
+    receipientDetails:value,
   })
 }
 
 handleIncStakehsChange=(value)=>{
+
+  const incStake = value.map(item =>({
+    stakeholder_field_id: item.value,
+    stakeholder_field_label: item.label
+}))
+
+this.props.setIncStakeh(incStake)
+
   this.setState({
     incStakeh:value,
   })
@@ -164,9 +185,10 @@ this.setState({
 componentDidMount() {
   const {activityDet} = this.props.workflowDetail
   const {emailObj} = this.props.workflowDetail
-  // const {emailTempName} = this.state
+  const {recipients} = this.props.item
+  const {stakehList} = this.props.listWrkFlw
+
   const emailTemplateName = emailObj.filter(itm => itm.email_template_id === activityDet[0].email_template_id)
-  // console.log(emailTemplateName[0].name)
 
 if (activityDet[0].email_template_id!==""){
 
@@ -174,6 +196,7 @@ if (activityDet[0].email_template_id!==""){
     email_template_id:[{label : emailTemplateName[0].name, value:emailTemplateName[0].email_template_id}]
         })
 }
+
 }
 
 formSubmit=(e)=>{
@@ -181,15 +204,16 @@ formSubmit=(e)=>{
 
     const {user:{bio_access_id:bId}} = this.props.session
     const {activity_Store} = this.props.workflowDetail
+    const {recipients, incStakehObj} = this.props.updActReducer
     
 
      const { 
      email_template_id ,
-     recipients ,
      include_assignee ,
      include_home ,
      include_owner ,
      include_stakeholders} = this.state
+
 
     const updateObj={
       task_id:activity_Store[0].task_id,
@@ -219,12 +243,12 @@ formSubmit=(e)=>{
       acl_entries: activity_Store[0].acl_entries,
 
       email_template_id: email_template_id.value,
-      recipients: null,
+      recipients: recipients,
       include_assignee: include_assignee,
       include_home: include_home,
       include_owner: include_owner,
       include_stakeholders: include_stakeholders,
-      stakeholder_fields: null,
+      stakeholder_fields: incStakehObj,
       is_enable_auto_scripting: activity_Store[0].is_enable_auto_scripting,
       auto_scripting: activity_Store[0].auto_scripting,
 
@@ -238,6 +262,7 @@ formSubmit=(e)=>{
 
 }
 
+
   render() {
 
     const {
@@ -250,9 +275,8 @@ formSubmit=(e)=>{
 
   const {emailObj,customFieldObj} = this.props.workflowDetail
   const optionEmailTemp = emailObj.map((itm => ({ value: itm.email_template_id, label:decodeURIComponent(itm.name)})))
-  const optionCstmFldStkhObj = customFieldObj.map((itm => ({ value: decodeURIComponent(itm.custom_field_name), label:decodeURIComponent(itm.custom_field_name)})))
-  console.log(optionCstmFldStkhObj)
-  const { recepients, incStakeh, email_template_id} = this.state
+  const optionCstmFldStkhObj = customFieldObj.map((itm => ({ value: decodeURIComponent(itm.custom_field_id), label:decodeURIComponent(itm.custom_field_name)})))
+  const { receipientDetails, incStakeh, email_template_id} = this.state
 
   const {stakehList} = this.props.listWrkFlw
   const stakehOptions = stakehList.map(itm=>({ value: itm.stakeholder_id, label:decodeURIComponent(itm.full_name), status: true}))
@@ -283,9 +307,9 @@ formSubmit=(e)=>{
                     <div className="form-group col">
                           <label>Recepients</label>
                                 <Select
-                              onChange={this.handleRecepientsChange}
+                              onChange={this.handleReceipientsChange}
                               options={stakehOptions}
-                              value={recepients}
+                              value={receipientDetails}
                               isMulti
                               isClearable
                             />
@@ -347,8 +371,11 @@ EmailWizard.propTypes={
   layout: PropTypes.object.isRequired,  
   workflowDetail:PropTypes.object.isRequired,  
   listWrkFlw: PropTypes.object.isRequired,  
-  updateActivity:PropTypes.object.isRequired,  
+  updateActivity:PropTypes.func.isRequired,  
   updActReducer:PropTypes.object.isRequired, 
+  setRecipients:PropTypes.func.isRequired,  
+  taskEmailRecipients:PropTypes.func.isRequired,
+  setIncStakeh:PropTypes.func.isRequired,
 }
 
 const mapStateToProps= state =>({
@@ -359,4 +386,4 @@ const mapStateToProps= state =>({
       updActReducer:state.updActReducer,
 })
   
-export default connect(mapStateToProps, {updateActivity})(EmailWizard)
+export default connect(mapStateToProps, {updateActivity, setRecipients, taskEmailRecipients, setIncStakeh})(EmailWizard)
