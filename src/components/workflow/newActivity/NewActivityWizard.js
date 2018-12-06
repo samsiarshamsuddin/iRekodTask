@@ -131,11 +131,19 @@ class NewActivityWizard extends Component {
       })
     }
 
-    handleChange=()=>{
-    const hd = this.state.hasDecision
-      this.setState({
-      hasDecision:!hd
-        })
+    handleChange=(event)=>{
+    // const hd = this.state.hasDecision
+    //   this.setState({
+    //   hasDecision:!hd
+    //     })
+
+    const target = event.target
+    const inputVal =  target.type==="checkbox"?target.checked:target.value 
+    const input = target.name   
+
+  this.setState({
+      [input]:inputVal,
+    }) 
     }
 
     handleSupervisorChange=(value)=>{
