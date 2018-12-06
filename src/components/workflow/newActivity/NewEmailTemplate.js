@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 
 import {addNewActivity} from '../../../actions/createNewActAction'
+import { setRecipients, setIncStakeh} from '../../../actions/updateActAction'
 
 class NewEmailTemplate extends Component {
 
@@ -13,19 +14,16 @@ class NewEmailTemplate extends Component {
     this.state={
         task_id: null,
         emailTemp:[],
-        // recepients:[],
-        include_assignee: null,
-        include_home: null,
-        include_owner: null,
-        include_stakeholders: null,
+        recepients:null,
+        include_assignee: false,
+        include_home: false,
+        include_owner: false,
+        include_stakeholders: false,
         email_template_id: null,
         recipients: null,
         incStakeh:[],
         emailTempName: "",
         inc_stakeh:false,
-        // recipient_id:null,
-        // recipient_name:null
-
         title: null,
         subject: null,
         instruction: null,
@@ -50,7 +48,6 @@ class NewEmailTemplate extends Component {
         task_results: [],
         acl_id: null,
         acl_entries: null,
-        
     }        
 }  
 
@@ -63,12 +60,26 @@ handleEmailTempChange=(value)=>{
 }
 
 handleRecepientsChange=(value)=>{
+  const viewSource = value.map(item =>({
+    recipient_id: item.value,
+    recipient_name: item.label
+}))
+
+this.props.setRecipients(viewSource)
+
   this.setState({
     recepients:value,
   })
 }
 
 handleIncStakehsChange=(value)=>{
+  const incStake = value.map(item =>({
+    stakeholder_field_id: item.value,
+    stakeholder_field_label: item.label
+}))
+
+this.props.setIncStakeh(incStake)
+
   this.setState({
     incStakeh:value,
   })
@@ -89,11 +100,11 @@ formSubmit=(e)=>{
   e.preventDefault()
   const {user:{bio_access_id:bId}} = this.props.session
   const {newActObj, resAct} = this.props.crtNewReducer
-  console.log(newActObj.subject)
+  const {recipients, incStakehObj} = this.props.updActReducer
+  console.log(newActObj.stakehValAssigneeNew)
 
   const { 
-    emailTempName, 
-  // recepients,
+  emailTempName, 
   include_assignee,
   include_home,
   include_stakeholders,
@@ -108,9 +119,8 @@ formSubmit=(e)=>{
     include_home: include_home,
     include_owner: include_owner,
     include_stakeholders: include_stakeholders,
-    // recipient_name: recepients.label,
-    // recipient_id: recepients.value,
-    //stakeholder_fields: [],
+    recipients: recipients,
+    stakeholder_fields: incStakehObj,
 
         task_id:resAct,
         title: newActObj.title,
@@ -119,32 +129,33 @@ formSubmit=(e)=>{
         estimated_duration: newActObj.estimated_duration,
         is_important: newActObj.is_important,
         is_auto_start: newActObj.is_auto_start,
-        default_assignor_id: newActObj.stakehValAssignorNew,
-        default_assignor_name: newActObj.stakehValAssignorNew,
-        default_assignee_id:newActObj.stakehValAssigneeNew,
-        default_assignee_name: newActObj.stakehValAssigneeNew,
-        default_supervisor_id: newActObj.stakehValSupervisorNew,
-        default_supervisor_name: newActObj.stakehValSupervisorNew,
-        default_manager_id: newActObj.stakehValManagerNew,
-        default_manager_name: newActObj.stakehValManagerNew,
-        parent_id: newActObj.null,
-        prev_task_id: newActObj.prevTaskNew,
-        prev_task_title: newActObj.prevTaskNew,
+        default_assignor_id: newActObj.default_assignor_id,
+        default_assignor_name: newActObj.default_assignor_name,
+        default_assignee_id:newActObj.default_assignee_id,
+        default_assignee_name: newActObj.default_assignee_name,
+        default_supervisor_id: newActObj.default_supervisor_id,
+        default_supervisor_name: newActObj.default_supervisor_name,
+        default_manager_id: newActObj.default_manager_id,
+        default_manager_name: newActObj.default_manager_name,
+        parent_id: newActObj.parent_id,
+        prev_task_id: newActObj.prev_task_id,
+        prev_task_title: newActObj.prev_task_title,
         additional_tasks: newActObj.additional_tasks,
-        next_task_id: newActObj.nextTaskNew,
-        next_task_title: newActObj.nextTaskNew,
-        is_decision: newActObj.hasDecision,
+        next_task_id: newActObj.next_task_id,
+        next_task_title: newActObj.next_task_title,
+        is_decision: newActObj.is_decision,
         task_results: newActObj.task_results,
         acl_id: newActObj.acl_id,
         acl_entries: newActObj.acl_entries,
-        is_enable_auto_scripting: false,
-        auto_scripting: null,
+        is_enable_auto_scripting: newActObj.is_enable_auto_scripting,
+        auto_scripting: newActObj.auto_scripting,
 
         bio_access_id: bId,
         action: "SAVE_TASK" 
   }       
 
   this.props.addNewActivity(newEmailObj)
+  console.log(newEmailObj)
   alert("Successful Created")
 }
 
@@ -261,6 +272,9 @@ NewEmailTemplate.propTypes={
   listWrkFlw: PropTypes.object.isRequired,  
   crtNewReducer:  PropTypes.object.isRequired,
   addNewActivity:PropTypes.func.isRequired,
+  setRecipients:PropTypes.func.isRequired,
+  setIncStakeh:PropTypes.func.isRequired,
+  updActReducer:PropTypes.object.isRequired,
 }
 
 const mapStateToProps= state =>({
@@ -268,7 +282,8 @@ const mapStateToProps= state =>({
       layout:state.layout,
       workflowDetail:state.workflowDetail,
       listWrkFlw:state.listWrkFlw,
-      crtNewReducer: state.crtNewReducer
+      crtNewReducer: state.crtNewReducer,
+      updActReducer: state.updActReducer
 })
   
-export default connect(mapStateToProps, {addNewActivity})(NewEmailTemplate)
+export default connect(mapStateToProps, {addNewActivity, setRecipients, setIncStakeh})(NewEmailTemplate)
