@@ -95,12 +95,12 @@ formSubmit=(e)=>{
     acl_entries: activity_Store[0].acl_entries,
 
     email_template_id: activity_Store[0].email_template_id,
-    recipients: null,
+    recipients: activity_Store[0].recipients,
     include_assignee: activity_Store[0].include_assignee,
     include_home: activity_Store[0].include_home,
     include_owner: activity_Store[0].include_owner,
     include_stakeholders: activity_Store[0].include_stakeholders,
-    stakeholder_fields: null,
+    stakeholder_fields: activity_Store[0].stakeholder_fields,
 
     is_enable_auto_scripting: is_enable_auto_scripting,
     auto_scripting: auto_scripting,
